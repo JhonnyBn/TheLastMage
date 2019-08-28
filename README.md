@@ -18,7 +18,6 @@ Versões futuras podem ter power-ups ou classes para mudar a habilidade especial
 
   - 2 a 4 jogadores (clientes)
   - Servidor do jogo
-  - Servidor de chat
   - Banco de dados
 
 **Testes a serem implementados:**
