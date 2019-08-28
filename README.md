@@ -8,10 +8,11 @@ Cada jogador pode, em seu turno, optar por:
   - Atacar outro jogador,
   - Defender,
   - Especial (ataque muito forte, limitado a 3 por partida)
-O objetivo do jogo é derrotar todos os outros e ser o último sobrevivente.
-Os jogadores podem usar qualquer política ou estratégia, como múltiplos atacando o mesmo alvo, formação de times e/ou traições.
-Para formar tais estratégias, teremos um sistema de chat incorporado.
-Versões futuras podem ter power-ups ou classes para mudar o especial dos jogadores.
+
+O objetivo do jogo é derrotar todos os outros e ser o último sobrevivente.\
+Para tanto, cada ataque causa 25 de dano no alvo escolhido, e o ataque especial causa 50 de dano.\
+Cada jogador possui inicialmente 100 pontos de vida, e ao se proteger, não recebe dano até seu próximo turno.\
+Versões futuras podem ter power-ups ou classes para mudar a habilidade especial dos jogadores.
 
 **Componentes:**
 
