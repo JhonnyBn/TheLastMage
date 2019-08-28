@@ -1,9 +1,9 @@
-# TheLastMage
+# The Last Mage
 Um jogo baseado em turnos em que o vencedor é o último sobrevivente, desenvolvido para atender os requisitos da disciplina Sistemas Distribuídos no 6º período da graduação de Sistemas de Informação na UFU.
 
 **Especificações:**
 
-É um game baseado em turnos com 2 a 4 jogadores.
+É um game baseado em turnos com 2 a 4 jogadores.\
 Cada jogador pode, em seu turno, optar por:
   - Atacar outro jogador,
   - Defender,
