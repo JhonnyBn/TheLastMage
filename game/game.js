@@ -19,7 +19,7 @@ class mage {
 	}
 
 	checkLife() {
-		if(this.life === 0) {
+		if(this.life <= 0) {
 			console.log(this.name + " just died.\n")
 			this.alive = 0
 		} else {
