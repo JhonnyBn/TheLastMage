@@ -1,39 +1,50 @@
 const socketIo = require("socket.io");
 const readline = require("readline");
+const Game = require("./game.js");
 const readlineInterface = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
   terminal: false
 });
 
-const socket = socketIo();
-const connections = new Array();
+function main() {
 
-socket.on("connection", client => {
-  console.log("client connected");
-  connections.push(client);
-  client.on("message", value => {
-    console.log("msg:", value);
-    sendMsgToAllButIgnoreOne(
-      `Parece que o outro client me mandou uma msg.`,
-      client
-    );
-  });
-});
-socket.listen(8080);
+  const socket = socketIo();
+  const sender = new Sender(new Array());
+  const currentGame = new Game(sender)
 
-function sendMsgToAll(msg) {
-  connections.forEach(connection => {
-    connection.send(msg);
+
+  socket.on("connection", client => {
+    console.log("client connected");
+    sender.connections.push(client);
+    client.on("message", value => {
+      currentGame.processInput(value)
+    });
   });
+  socket.listen(8080);
 }
 
-function sendMsgToAllButIgnoreOne(msg, ignoreClient) {
-  connections
-    .filter(client => client != ignoreClient)
-    .forEach(connection => {
+class Sender {
+
+  constructor(connections) {
+    this.connections = connections
+  }
+
+  sendMsgToAll(msg) {
+    this.connections.forEach(connection => {
       connection.send(msg);
     });
+  }
+
+  sendMsgToAllButIgnoreOne(msg, ignoreClient) {
+    this.connections
+      .filter(client => client != ignoreClient)
+      .forEach(connection => {
+        connection.send(msg);
+      });
+  }
 }
 
 readlineInterface.on("line", line => sendMsgToAll(line));
+
+main()
