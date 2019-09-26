@@ -8,14 +8,14 @@ var helpText = "The current commands are:\n" +
 
 // Classe do mago, basicamente o player
 class mage {
-	constructor(name, id, sender) {
+	constructor(name, sender) {
 		this.name = name
-		this.id = id
 		this.life = 100
 		this.alive = 1
 		this.attackDamage = 25
 		this.specialDamage = 50
 		this.defending = 0
+		this.specialAttacksLeft = 3
 	}
 
 	checkLife() {
@@ -40,7 +40,8 @@ class mage {
 	// Ataca um jogador com o especial,
 	// retorna 1 se obteve sucesso, 0 caso contrário
 	specialAttack(target) {
-		if (target.isValid()) {
+		if ( target.isValid() && this.specialAttacksLeft > 0 ) {
+			this.specialAttacksLeft -= 1
 			target.life -= this.specialDamage
 			return 1
 		}
@@ -72,8 +73,11 @@ class mage {
 				if (this.attack(target)) {
 					console.log("Success! Dealt " + this.attackDamage + " damage.")
 					target.checkLife()
-				} else
+					return 1
+				} else {
 					console.log("Fail! He or she blocked the attack.")
+					return 1
+				}
 
 				break;
 			case 'specialAttack':
@@ -81,15 +85,20 @@ class mage {
 				if (this.specialAttack(target)) {
 					console.log("Success! Dealt " + this.specialDamage + " damage.")
 					target.checkLife()
-				} else
+					return 1
+				} else {
 					console.log("Fail! He or she blocked the special attack.")
+					return 1
+				}
 				break;
 			case 'defend':
 				console.log("Defending until next turn.")
 				this.defend()
+				return 1
 				break;
 			default:
 				console.log("This is not a valid command. Type 'help' for display the current commands.")
+				return 0
 				break;
 		}
 	}
@@ -101,7 +110,7 @@ module.exports = class game {
 		this.sender = sender
 		this.players = []
 		this.turn = 0
-		this.currentPlayer = 0
+		this.currentPlayer = null
 		this.running = 0
 	}
 
@@ -118,9 +127,8 @@ module.exports = class game {
 			console.log("Name already in use. Please choose another.")
 			return
 		}
-
-		let playerId = this.players.length + 1
-		this.players.push(new mage(name, playerId, this.sender))
+		
+		this.players.push(new mage(name, this.sender))
 	}
 
 	// Retorna um jogador com base em seu NAME
@@ -178,8 +186,10 @@ module.exports = class game {
 		// Comecar o jogo
 		if (command == "start") {
 
-			if (!this.running)
+			if (!this.running) {
 				this.run()
+				console.log("The game has started!\n")
+			}
 
 			return
 		}
@@ -203,8 +213,9 @@ module.exports = class game {
 			}
 
 			// O jogador realiza a acao com alvo do parametro
-			this.getPlayerByName(player).takeAction(command, target)
-			this.setNextPlayer()
+			if( this.getPlayerByName(player).takeAction(command, target) ) {
+				this.setNextPlayer()
+			}
 
 		}
 		// Nao esta no turno do jogador
