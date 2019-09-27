@@ -10,6 +10,7 @@ var helpText = "The current commands are:\n" +
 class mage {
 	constructor(name, sender) {
 		this.name = name
+		this.sender = sender
 		this.life = 100
 		this.alive = 1
 		this.attackDamage = 25
