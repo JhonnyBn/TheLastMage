@@ -70,7 +70,7 @@ class mage {
 
 		switch (action) {
 			case 'attack':
-				console.log("Attacking " + target.name + "...")
+				console.log(this.name + " is attacking " + target.name + "...")
 				if (this.attack(target)) {
 					console.log("Success! Dealt " + this.attackDamage + " damage.")
 					target.checkLife()
@@ -82,7 +82,7 @@ class mage {
 
 				break;
 			case 'specialAttack':
-				console.log("Using special attack on " + target.name + "...")
+				console.log(this.name + " is using special attack on " + target.name + "...")
 				if (this.specialAttack(target)) {
 					console.log("Success! Dealt " + this.specialDamage + " damage.")
 					target.checkLife()
@@ -195,37 +195,39 @@ module.exports = class game {
 			return
 		}
 
-		// No turno do jogador
-		if (player == this.currentPlayer.name) {
+		if( this.running ) {
+			// No turno do jogador
+			if (player == this.currentPlayer.name) {
 
-			// Verifica se o comando eh valido
-			if (["attack", "specialAttack", "defend"].indexOf(command) === -1) {
-				console.log("This is not a valid command. Type 'help' for display the current commands.")
-				return
-			}
-
-			let target = null
-			if (command !== "defend") {
-				target = this.getPlayerByName(param)
-				if (target == null || !target.alive) {
-					console.log("Please insert a valid target.")
+				// Verifica se o comando eh valido
+				if (["attack", "specialAttack", "defend"].indexOf(command) === -1) {
+					console.log("This is not a valid command. Type 'help' for display the current commands.")
 					return
 				}
-			}
 
-			// O jogador realiza a acao com alvo do parametro
-			if( this.getPlayerByName(player).takeAction(command, target) ) {
-				this.setNextPlayer()
-			}
+				let target = null
+				if (command !== "defend") {
+					target = this.getPlayerByName(param)
+					if (target == null || !target.alive) {
+						console.log("Please insert a valid target.")
+						return
+					}
+				}
 
-		}
-		// Nao esta no turno do jogador
-		else {
-			// Se o jogador estiver morto
-			if (!this.getPlayerByName(player).alive) {
-				console.log("You are dead. Please start a new game.")
-			} else {
-				console.log("Please wait for your turn, or type \"help\" for the commands information.")
+				// O jogador realiza a acao com alvo do parametro
+				if( this.getPlayerByName(player).takeAction(command, target) ) {
+					this.setNextPlayer()
+				}
+
+			}
+			// Nao esta no turno do jogador
+			else {
+				// Se o jogador estiver morto
+				if (!this.getPlayerByName(player).alive) {
+					console.log("You are dead. Please start a new game.")
+				} else {
+					console.log("Please wait for your turn, or type \"help\" for the commands information.")
+				}
 			}
 		}
 	}
