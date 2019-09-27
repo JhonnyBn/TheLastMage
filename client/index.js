@@ -5,27 +5,26 @@ const readlineInterface = readline.createInterface({
   terminal: false
 });
 
-let inAGame = false
-let name
+let inAGame = false;
+let name;
 
 var socket = require("socket.io-client")("http://localhost:8080");
-socket.on("connect", function () {
+socket.on("connect", function() {
   console.log("connected");
+  console.log("Digite seu nome:");
+  inAGame = false;
 });
 socket.on("message", value => {
   console.log("msg:", value);
 });
-socket.on("disconnect", function () { });
+socket.on("disconnect", function() {});
 
 readlineInterface.on("line", line => {
   if (!inAGame) {
-    socket.send("new join " + line)
-    name=line
-    inAGame = true
-  }else{
-    socket.send(name + " " + line)
+    socket.send("new join " + line);
+    name = line;
+    inAGame = true;
+  } else {
+    socket.send(name + " " + line);
   }
-
-})
-
-console.log("Digite seu nome:")
+});

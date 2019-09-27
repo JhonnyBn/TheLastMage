@@ -1,47 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
     <script src="libs/socket.io.js"></script>
     <script>
-        let inAGame = false
-        let name = ""
+      let inAGame = false;
+      let name = "";
 
-        var socket = io("http://localhost:8080");
-        socket.on("connect", function () {
-            console.log("connected");
-        });
-        socket.on("message", value => {
-            console.log("msg:", value);
-        });
-        socket.on("disconnect", function () { });
+      var socket = io("http://localhost:8080");
+      socket.on("connect", function() {
+        printMsg("connected");
+        printMsg("Digite o seu nome:");
+        inAGame = false;
+      });
+      socket.on("message", value => {
+        printMsg("msg:" + value);
+      });
+      socket.on("disconnect", function() {});
 
-        function enviar() {
+      function enviar() {
+        let line = document.getElementById("entrada").value;
 
-            let line =  document.getElementById("entrada").value;
-            console.log("line", line)
-
-            if (!inAGame) {
-                socket.send("new join " + line)
-                name = line
-                inAGame = true
-            } else {
-                socket.send(name + " " + line)
-            }
-
-
+        if (!inAGame) {
+          socket.send("new join " + line);
+          name = line;
+          inAGame = true;
+        } else {
+          socket.send(name + " " + line);
         }
+      }
 
+      function printMsg(msg) {
+        let output = document.getElementById("saida");
+        output.innerHTML =
+          output.innerHTML + "<br>" + msg.replace(/\n/g, "<br>");
+      }
     </script>
-</head>
+  </head>
 
-<body>
-    <input type="text" id="entrada"><br><br>
-    <input type="button" value="Enviar" onclick="enviar();">
-</body>
-
+  <body>
+    <input type="text" id="entrada" /><br /><br />
+    <input type="button" value="Enviar" onclick="enviar();" />
+    <div id="saida"></div>
+  </body>
 </html>
