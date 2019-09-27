@@ -146,8 +146,8 @@ module.exports = class game {
     }
 
     this.players.push(new mage(name, this.sender));
-    this.sender.sendMsgToCurrentClient("Welcome to the game, " + param + "!\n");
-    this.sender.sendMsgToAllButIgnoreCurrentClient(param + " join the game");
+    this.sender.sendMsgToCurrentClient("Welcome to the game, " + name + "!\n");
+    this.sender.sendMsgToAllButIgnoreCurrentClient(name + " join the game");
   }
 
   // Retorna um jogador com base em seu NAME
@@ -178,6 +178,7 @@ module.exports = class game {
 
   // Processa o texto de input para realizar as acoes do jogo
   processInput(input) {
+    console.log(input)
     input = input.split(" ");
     let player = input[0];
     let command = input[1];
