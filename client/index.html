@@ -12,12 +12,12 @@
 
       var socket = io("http://localhost:8080");
       socket.on("connect", function() {
-        printMsg("connected");
-        printMsg("Digite o seu nome:");
+        printMsg("Connected to the server.");
+        printMsg("Type your name:");
         inAGame = false;
       });
       socket.on("message", value => {
-        printMsg("msg:" + value);
+        printMsg(value);
       });
       socket.on("disconnect", function() {});
 
@@ -42,8 +42,10 @@
   </head>
 
   <body>
-    <input type="text" id="entrada" /><br /><br />
-    <input type="button" value="Enviar" onclick="enviar();" />
+	<form action="javascript:enviar();">
+		<input type="text" id="entrada" /><br /><br />
+		<input type="submit" value="Enviar" />
+	</form>
     <div id="saida"></div>
   </body>
 </html>

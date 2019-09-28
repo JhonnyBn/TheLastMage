@@ -3,7 +3,7 @@ var helpText =
   "join <yourName>\t\t\tTo join the game\n" +
   "start\t\t\t\t\tTo start the game\n" +
   "attack <player>\t\t\tTo attack other player\n" +
-  "specialAttack <player>\tTo use special attack on other player\n" +
+  "specialattack <player>\tTo use special attack on other player\n" +
   "defend\t\t\t\t\tTo defend yourself this turn\n" +
   "help\t\t\t\t\tTo display this list of commands.\n";
 
@@ -51,14 +51,17 @@ class mage {
   }
 
   // Ataca um jogador com o especial,
-  // retorna 1 se obteve sucesso, 0 caso contrário
+  // retorna 1 se obteve sucesso, 0 caso contrario
   specialAttack(target) {
-    if (target.isValid() && this.specialAttacksLeft > 0) {
-      this.specialAttacksLeft -= 1;
-      target.life -= this.specialDamage;
-      return 1;
-    }
-    return 0;
+	  
+	this.specialAttacksLeft -= 1;
+	
+	if ( target.isValid() ) {
+		target.life -= this.specialDamage;
+		return 1;
+	}
+	
+	return 0;
   }
 
   // Defende para nao ser atacado por um turno
@@ -79,8 +82,11 @@ class mage {
 
   // Realiza uma acao com base no comando (action) e alvo (target)
   takeAction(action, target) {
+	  
     switch (action) {
+		
       case "attack":
+	  
         this.sender.sendMsgToAll(
           this.name + " is attacking " + target.name + "..."
         );
@@ -89,39 +95,45 @@ class mage {
             "Success! Dealt " + this.attackDamage + " damage."
           );
           target.checkLife();
-          return 1;
         } else {
           this.sender.sendMsgToAll("Fail! He or she blocked the attack.");
-          return 1;
         }
 
+		return 1;
         break;
-      case "specialAttack":
-        this.sender.sendMsgToAll(
-          this.name + " is using special attack on " + target.name + "..."
-        );
-        if (this.specialAttack(target)) {
-          this.sender.sendMsgToAll(
-            "Success! Dealt " + this.specialDamage + " damage."
-          );
-          target.checkLife();
-          return 1;
-        } else {
-          this.sender.sendMsgToAll(
-            "Fail! He or she blocked the special attack."
-          );
-          return 1;
-        }
+		
+      case "specialattack":
+	  
+		this.sender.sendMsgToAll(
+			this.name + " is using special attack on " + target.name + "..."
+		);
+		
+		if ( this.specialAttack(target) ) {
+			this.sender.sendMsgToAll(
+				"Success! Dealt " + this.specialDamage + " damage."
+			);
+			target.checkLife();
+		}
+		else {
+			this.sender.sendMsgToAll("Fail! He or she blocked the special attack.");
+		}
+		
+		return 1;
         break;
+		
       case "defend":
-        this.sender.sendMsgToCurrentClient("Defending until next turn.");
+	  
         this.defend();
+        this.sender.sendMsgToCurrentClient("Defending until next turn.");
+		this.sender.sendMsgToAllButIgnoreCurrentClient(this.name + " is defending until next turn.");
+		
         return 1;
         break;
+		
       default:
-        this.sender.sendMsgToCurrentClient(
-          "This is not a valid command. Type 'help' for display the current commands."
-        );
+	  
+        this.sender.sendMsgToCurrentClient("This is not a valid command. Type 'help' for display the current commands.");
+		
         return 0;
         break;
     }
@@ -297,7 +309,7 @@ module.exports = class game {
 			// No turno do jogador
 			if (player == this.currentPlayer.name) {
 				
-				// Se o jogador nao for defender, verifica se o alvo eh valido
+				// Verifica se o alvo eh valido
 				let target = null;
 				if (command !== "defend") {
 					target = this.getPlayerByName(param);
@@ -306,10 +318,18 @@ module.exports = class game {
 						break;
 					}
 				}
+				
+				// Verifica se o jogador pode usar ataques especiais
+				if ( command === 'specialattack' ) {
+					if ( this.currentPlayer.specialAttacksLeft < 1 ) {
+						this.sender.sendMsgToCurrentClient("You can't use more special attacks this game.")
+						break;
+					}
+				}
 
 				// O jogador realiza a acao com alvo do parametro
-				// Se der certo, passa o turno
-				if ( this.getPlayerByName(player).takeAction(command, target) ) {
+				// Se der certo, passa para o proximo turno
+				if ( this.currentPlayer.takeAction(command, target) ) {
 					this.setNextPlayer();
 				}
 			}
@@ -334,7 +354,10 @@ module.exports = class game {
 		default:
 			
 			let msg = input.join(" ").slice(player.length);
-			this.sender.sendMsgToAllButIgnoreCurrentClient(player + ":" + msg);
+			if( msg === "")
+				break;
+			
+			this.sender.sendMsgToAll(player + ":" + msg);
 			
 			break;
 	}
@@ -349,8 +372,8 @@ jogo.processInput("Ciclano help")
 jogo.processInput("Fulano start")
 jogo.processInput("Fulano attack Ciclano")
 jogo.processInput("Ciclano attack Fulano")
-jogo.processInput("Fulano specialAttack Ciclano")
-jogo.processInput("Ciclano specialAttack Fulano")
+jogo.processInput("Fulano specialattack Ciclano")
+jogo.processInput("Ciclano specialattack Fulano")
 jogo.processInput("Fulano defend")
 jogo.processInput("Ciclano attack Fulano")
 jogo.processInput("Fulano attack Ciclano")
@@ -369,7 +392,7 @@ jogo.processInput("Fulano attack Ciclano")
 		Se 0, esse jogador nao está no jogo ainda
 
 		COMANDO é o comando que pode realizar ações:
-		join, help, attack, specialAttack, defend
+		join, help, attack, specialattack, defend
 
 		PARAMETRO é o NAME do alvo da acao
 */
