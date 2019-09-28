@@ -238,6 +238,7 @@ module.exports = class game {
 
   // Processa o texto de input para realizar as acoes do jogo
   processInput(input) {
+    console.log(input)
     input = input.split(" ");
     let player = input[0];
     let command = input[1];
