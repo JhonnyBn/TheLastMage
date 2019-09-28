@@ -1,19 +1,30 @@
-var readline = require('readline');
-var r1 = readline.createInterface({
+const readline = require("readline");
+const readlineInterface = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
   terminal: false
 });
 
-var socket = require('socket.io-client')('http://localhost:8080');
-socket.on('connect', function(){
-    console.log("conectado")
-    socket.send("new_msg","ola")
+let inAGame = false;
+let name;
+
+var socket = require("socket.io-client")("http://localhost:8080");
+socket.on("connect", function() {
+  console.log("Connected to the server.");
+  console.log("Type your name:");
+  inAGame = false;
 });
 socket.on("message", value => {
-    console.log("msg:", value)
-    
-})
-socket.on('disconnect', function(){});
+  console.log(value);
+});
+socket.on("disconnect", function() {});
 
-r1.on('line', line => socket.send(line))
+readlineInterface.on("line", line => {
+  if (!inAGame) {
+    socket.send("new join " + line);
+    name = line;
+    inAGame = true;
+  } else {
+    socket.send(name + " " + line);
+  }
+});
