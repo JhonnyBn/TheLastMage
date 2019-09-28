@@ -19,6 +19,15 @@ class mage {
     this.defending = 0;
     this.specialAttacksLeft = 3;
   }
+  
+  reset() {
+    this.life = 100;
+    this.alive = 1;
+    this.attackDamage = 25;
+    this.specialDamage = 50;
+    this.defending = 0;
+    this.specialAttacksLeft = 3;
+  }
 
   checkLife() {
     if (this.life <= 0) {
@@ -134,6 +143,36 @@ module.exports = class game {
     this.running = 1;
     this.setNextPlayer();
   }
+  
+  // Reseta o jogo
+  resetGame() {
+	  for( var player of this.players ) {
+		  player.reset();
+	  }
+	  this.turn = 0;
+	  this.currentPlayer = null;
+	  this.running = 0;
+	  this.sender.sendMsgToAll("The game has been reset.\nSay 'start' to begin a new game.\n");
+  }
+  
+  // Retorna True se haver somente um jogador vivo
+  isGameFinished() {
+	  let nPlayersAlive = 0;
+	  for( var player of this.players ) {
+		  if( player.alive ) nPlayersAlive += 1;
+	  }
+	  return ( nPlayersAlive < 2 )
+  }
+  
+  // Parabeniza o vencedor do jogo
+  congratulateWinner() {
+	  for( var player of this.players ) {
+		  if( player.alive ) {
+			  this.sender.sendMsgToAll("Congratulations " + player.name + "! You won the game!\n");
+			  return;
+		  }
+	  }
+  }
 
   // Adiciona um novo jogador
   addPlayer(name) {
@@ -146,8 +185,8 @@ module.exports = class game {
     }
 
     this.players.push(new mage(name, this.sender));
-    this.sender.sendMsgToCurrentClient("Welcome to the game, " + param + "!\n");
-    this.sender.sendMsgToAllButIgnoreCurrentClient(param + " join the game");
+    this.sender.sendMsgToCurrentClient("Welcome to the game, " + name + "!\n");
+    this.sender.sendMsgToAllButIgnoreCurrentClient(name + " joined the game");
   }
 
   // Retorna um jogador com base em seu NAME
@@ -172,8 +211,17 @@ module.exports = class game {
     ];
     this.turn += 1;
     this.currentPlayer.disableShield();
-
-    if (!this.currentPlayer.alive) this.setNextPlayer();
+	
+	// Se o jogador morreu, verifica se o jogo acabou
+	// Caso tenha acabado, reinicia o jogo
+	// Caso ainda nao tenha acabado, continua
+    if ( !this.currentPlayer.alive ) {
+		if ( this.isGameFinished() ) {
+			this.congratulateWinner();
+			this.resetGame();
+		}
+		else this.setNextPlayer();
+	}
   }
 
   // Processa o texto de input para realizar as acoes do jogo
@@ -183,93 +231,131 @@ module.exports = class game {
     let command = input[1];
     let param = input[2];
 
-    // Jogador nao registrado
-    if (player == "new") {
-      if (command != "join" || !param) {
-        this.sender.sendMsgToCurrentClient(
-          'To join the game, please say "join <yourName>"'
-        );
-        return;
-      }
+	switch( command ) {
+		
+		// Jogador registrando
+		case 'join':
+		
+			// Ja esta registrado
+			if ( player !== "new" ) {
+				this.sender.sendMsgToCurrentClient(
+				  "You are already in the game, " + player + "!\n"
+				);
+				break;
+			}
+			
+			// Nao colocou o nome
+			if ( !param ) {
+				this.sender.sendMsgToCurrentClient(
+				  'To join the game, please say "join <yourName>"'
+				);
+				break;
+			}
+			
+			// Adiciona o player
+			this.addPlayer(param);
+			
+			break;
+			
+		// Solicitacao de comandos
+		case 'help':
+		
+			this.sender.sendMsgToCurrentClient(helpText);
+			
+			break;
+			
+		// Comecar o jogo
+		case 'start':
+		
+			if ( !this.running ) {
+				this.run();
+				this.sender.sendMsgToAll("The game has started!\n");
+			}
+			
+			break;
+		
+		// Recomecar o jogo
+		case 'reset':
+			
+			this.resetGame();
+			
+			break;
+		
+		// Comandos de ataque e defesa
+		case 'attack':
+		case 'specialattack':
+		case 'defend':
+			
+			// Se o jogo nao tiver comecado
+			if( !this.running ) {
+				this.sender.sendMsgToCurrentClient(
+					'Please start the game, or type "help" for the commands information.'
+				);
+				break;
+			}
+			
+			// No turno do jogador
+			if (player == this.currentPlayer.name) {
+				
+				// Se o jogador nao for defender, verifica se o alvo eh valido
+				let target = null;
+				if (command !== "defend") {
+					target = this.getPlayerByName(param);
+					if (target == null || !target.alive) {
+						this.sender.sendMsgToCurrentClient("Please insert a valid target.");
+						break;
+					}
+				}
 
-      this.addPlayer(param);
-
-      return;
-    }
-
-    // Solicitacao de help/comandos
-    if (command == "help") {
-      this.sender.sendMsgToCurrentClient(helpText);
-      return;
-    }
-
-    // Comecar o jogo
-    if (command == "start") {
-      if (!this.running) {
-        this.run();
-        this.sender.sendMsgToAll("The game has started!\n");
-      }
-
-      return;
-    }
-
-    if (this.running) {
-      // No turno do jogador
-      if (player == this.currentPlayer.name) {
-        // Verifica se o comando eh valido
-        if (["attack", "specialAttack", "defend"].indexOf(command) === -1) {
-          this.sender.sendMsgToCurrentClient(
-            "This is not a valid command. Type 'help' for display the current commands."
-          );
-          return;
-        }
-
-        let target = null;
-        if (command !== "defend") {
-          target = this.getPlayerByName(param);
-          if (target == null || !target.alive) {
-            this.sender.sendMsgToCurrentClient("Please insert a valid target.");
-            return;
-          }
-        }
-
-        // O jogador realiza a acao com alvo do parametro
-        if (this.getPlayerByName(player).takeAction(command, target)) {
-          this.setNextPlayer();
-        }
-      }
-      // Nao esta no turno do jogador
-      else {
-        // Se o jogador estiver morto
-        if (!this.getPlayerByName(player).alive) {
-          this.sender.sendMsgToCurrentClient(
-            "You are dead. Please start a new game."
-          );
-        } else {
-          this.sender.sendMsgToCurrentClient(
-            'Please wait for your turn, or type "help" for the commands information.'
-          );
-        }
-      }
-    }
+				// O jogador realiza a acao com alvo do parametro
+				// Se der certo, passa o turno
+				if ( this.getPlayerByName(player).takeAction(command, target) ) {
+					this.setNextPlayer();
+				}
+			}
+			// Nao esta no turno do jogador
+			else {
+				// Se o jogador estiver morto
+				if (!this.getPlayerByName(player).alive) {
+					this.sender.sendMsgToCurrentClient(
+						"You are dead. Please wait for the game to finish or start a new game."
+					);
+				}
+				else {
+					this.sender.sendMsgToCurrentClient(
+						'Please wait for your turn, or type "help" for the commands information.'
+					);
+				}
+			}
+			
+			break;
+		
+		// Chat
+		default:
+			
+			let msg = input.join(" ").slice(player.length);
+			this.sender.sendMsgToAllButIgnoreCurrentClient(player + ":" + msg);
+			
+			break;
+	}
   }
 };
 
-// // Comandos de teste
-// jogo = new game()
-// jogo.processInput("new join Fulano")
-// jogo.processInput("new join Ciclano")
-// jogo.processInput("Ciclano help")
-// jogo.processInput("Fulano start")
-// jogo.processInput("Fulano attack Ciclano")
-// jogo.processInput("Ciclano attack Fulano")
-// jogo.processInput("Fulano specialAttack Ciclano")
-// jogo.processInput("Ciclano specialAttack Fulano")
-// jogo.processInput("Fulano defend")
-// jogo.processInput("Ciclano attack Fulano")
-// jogo.processInput("Fulano attack Ciclano")
-// jogo.processInput("Ciclano attack Fulano")
-// jogo.processInput("Fulano attack Ciclano")
+/*/ Comandos de teste
+jogo = new game()
+jogo.processInput("new join Fulano")
+jogo.processInput("new join Ciclano")
+jogo.processInput("Ciclano help")
+jogo.processInput("Fulano start")
+jogo.processInput("Fulano attack Ciclano")
+jogo.processInput("Ciclano attack Fulano")
+jogo.processInput("Fulano specialAttack Ciclano")
+jogo.processInput("Ciclano specialAttack Fulano")
+jogo.processInput("Fulano defend")
+jogo.processInput("Ciclano attack Fulano")
+jogo.processInput("Fulano attack Ciclano")
+jogo.processInput("Ciclano attack Fulano")
+jogo.processInput("Fulano attack Ciclano")
 
 /*
 	Como funciona:
