@@ -125,7 +125,7 @@ class mage {
 	  
         this.defend();
         this.sender.sendMsgToCurrentClient("Defending until next turn.");
-		this.sender.sendMsgToAllButIgnoreCurrentClient(this.name + " is defending until next turn.");
+	this.sender.sendMsgToAllButIgnoreCurrentClient(this.name + " is defending until next turn.");
 		
         return 1;
         break;
@@ -208,13 +208,6 @@ module.exports = class game {
     }
   }
 
-  // Reseta os escudos dos jogadores
-  disableShields() {
-    for (var player of this.players) {
-      player.disableShield();
-    }
-  }
-
   // Prepara a proxima rodada
   setNextPlayer() {
     let nplayers = this.players.length;
@@ -224,9 +217,9 @@ module.exports = class game {
     this.turn += 1;
     this.currentPlayer.disableShield();
 	
-	// Se o jogador morreu, verifica se o jogo acabou
-	// Caso tenha acabado, reinicia o jogo
-	// Caso ainda nao tenha acabado, continua
+    // Se o jogador morreu, verifica se o jogo acabou
+    // Caso tenha acabado, reinicia o jogo
+    // Caso ainda nao tenha acabado, continua
     if ( !this.currentPlayer.alive ) {
 		if ( this.isGameFinished() ) {
 			this.congratulateWinner();
