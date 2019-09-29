@@ -1,1 +1,1 @@
-{"sender":null,"players":[{"name":"vinicius","sender":null,"life":100,"alive":1,"attackDamage":25,"specialDamage":50,"defending":0,"specialAttacksLeft":3},{"name":"clemente","sender":null,"life":100,"alive":1,"attackDamage":25,"specialDamage":50,"defending":0,"specialAttacksLeft":3}],"turn":1,"currentPlayer":{"name":"vinicius","sender":null,"life":100,"alive":1,"attackDamage":25,"specialDamage":50,"defending":0,"specialAttacksLeft":3},"running":1,"action":null}
+[{"msg":"help"},{"msg":"join vinicius"},{"msg":"join clemente"},{"msg":"start"},{"msg":"start"}]

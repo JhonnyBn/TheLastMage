@@ -5,17 +5,24 @@ import * as datasource from "./datasource"
 const socket = socketIo();
 const currentGame = gameFactory()
 
+async function main() {
 
-socket.on("connection", client => {
-  console.log("client connected");
-  currentGame.sender.connections.push(client);
-  client.on("message", value => {
-    currentGame.sender.currentClient = client;
-    currentGame.processInput(value);
-    //datasource.save(currentGame);
+  await datasource.loadMsgs(currentGame);
+
+  socket.on("connection", client => {
+    console.log("client connected");
+    currentGame.sender.connections.push(client);
+    client.on("message", value => {
+      datasource.saveMsg(value)
+      currentGame.sender.currentClient = client;
+      currentGame.processInput(value);
+      //datasource.save(currentGame);
+    });
   });
-});
-socket.listen(8080);
+  socket.listen(8080);
 
-console.log("Started.")
+  console.log("Started.")
+}
+
+main()
 //datasource.load(currentGame);

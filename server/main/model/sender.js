@@ -21,7 +21,9 @@ export default class Sender {
     }
 
     sendMsgToCurrentClient(msg) {
-        this.currentClient.send(msg);
+        if (this.currentClient != null) {
+            this.currentClient.send(msg);
+        }
         console.log(msg);
     }
 }
