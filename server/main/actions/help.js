@@ -7,7 +7,7 @@ export default class Help extends DefaultAction {
     }
 
     processCommand(game) {
-        const helpMsgs = this.getHelpMsg(game.action);
+        const helpMsgs = "Help:\n" + this.getHelpMsg(game.action);
         game.sender.sendMsgToCurrentClient(helpMsgs);
 
     }

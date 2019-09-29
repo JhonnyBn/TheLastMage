@@ -21,7 +21,7 @@ export default class Chat extends DefaultAction {
             game.sender.sendMsgToCurrentClient("Please inform a msg.")
         }
 
-        game.sender.sendMsgToAllButIgnoreCurrentClient(`${playerName}: ${msg}`);
+        game.sender.sendMsgToAllButIgnoreCurrentClient(`chat ${playerName}: ${msg}`);
         game.sender.sendMsgToCurrentClient(`sended: ${msg}`)
 
     }
