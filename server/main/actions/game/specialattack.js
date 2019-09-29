@@ -39,7 +39,7 @@ export default class SpecialAttack extends DefaultAction {
 
             if (game.currentPlayer.specialAttacksLeft < 1) {
                 game.sender.sendMsgToCurrentClient("You can't use more special attacks this game.")
-                break;
+                return;
             }
 
             game.sender.sendMsgToAll(

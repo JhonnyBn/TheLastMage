@@ -22,7 +22,7 @@ export default class Help extends DefaultAction {
     }
 
     getHelpMsg(action) {
-        if (action == undefined) return "---\n";
+        if (action == undefined) return "";
         if (action instanceof Help) return this.getHelpMsg(action.nextAction)
         return action.helpMsg + "\n" + this.getHelpMsg(action.nextAction)
     }

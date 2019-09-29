@@ -6,6 +6,7 @@ import Start from "../actions/game/start";
 import Reset from "../actions/game/reset";
 import Attack from "../actions/game/attack";
 import Defend from "../actions/game/defend";
+import SpecialAttack from "../actions/game/specialattack";
 
 
 export default function () {
@@ -17,6 +18,7 @@ export default function () {
     const reset = new Reset(start);
     const attack = new Attack(reset);
     const defend = new Defend(attack);
+    const specialAttack = new SpecialAttack(defend);
 
-    return new Game(sender, defend);
+    return new Game(sender, specialAttack);
 }
