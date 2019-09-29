@@ -3,7 +3,7 @@ import Mage from "./mage"
 export default class Game {
     constructor(sender, action) {
         this.sender = sender;
-        this.players = [];
+        this.players = new Array();
         this.turn = 0;
         this.currentPlayer = null;
         this.running = 0;
@@ -12,7 +12,14 @@ export default class Game {
 
     // Inicia o jogo
     run() {
+        if (this.players.length < 2) {
+            this.sender.sendMsgToCurrentClient("between 2 and 4 playter to start the game.")
+            return
+        }
+
         this.running = 1;
+        this.sender.sendMsgToAll("The game has started!\n");
+
         this.setNextPlayer();
     }
 
@@ -67,9 +74,7 @@ export default class Game {
 
     // Retorna um jogador com base em seu NAME
     getPlayerByName(name) {
-        for (var mago of this.players) {
-            if (mago.name == name) return mago;
-        }
+        return this.players.find(mage => mage.name == name)
     }
 
     // Prepara a proxima rodada
@@ -94,6 +99,10 @@ export default class Game {
 
     // Processa o texto de input para realizar as acoes do jogo
     processInput(input) {
-        this.action.process(input, this)
+        this.action.process(this, input)
+    }
+
+    isTheTurnOfThePlayer(playerName) {
+        return this.currentPlayer.name == playerName
     }
 }

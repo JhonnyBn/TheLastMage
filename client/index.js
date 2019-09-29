@@ -27,6 +27,5 @@ readlineInterface.on("line", line => {
   // } else {
   //   socket.send(name + " " + line);
   // }
-  console.log(line)
   socket.send(line)
 });

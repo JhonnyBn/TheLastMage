@@ -1,13 +1,13 @@
-import DefaultAction from "./actionDefaultClass"
+import DefaultAction from "../actionDefaultClass"
 
 export default class Join extends DefaultAction {
 
     constructor(nextAction) {
         super(nextAction, "join", Join.prototype.processCommand)
+        this.helpMsg = "join <yourName> -> To join the game."
     }
 
-    processCommand(input, game) {
-        console.log(super.openInput(input))
+    processCommand(game, input) {
         const { param } = super.openInput(input)
 
         // Nao colocou o nome

@@ -1,8 +1,22 @@
 import Game from "../model/game"
-import Join from '../actions/join'
+import Join from '../actions/game/join'
 import Sender from "../model/sender"
+import Help from "../actions/help";
+import Start from "../actions/game/start";
+import Reset from "../actions/game/reset";
+import Attack from "../actions/game/attack";
+import Defend from "../actions/game/defend";
+
 
 export default function () {
     const sender = new Sender(new Array());
-    return new Game(sender, new Join());
+
+    const join = new Join();
+    const help = new Help(join);
+    const start = new Start(help);
+    const reset = new Reset(start);
+    const attack = new Attack(reset);
+    const defend = new Defend(attack);
+
+    return new Game(sender, defend);
 }

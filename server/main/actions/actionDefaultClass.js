@@ -1,3 +1,5 @@
+const not_found_action_msg = "Command not found type \"help\" for the commands information."
+
 export default class DefaultAction {
 
     constructor(nextAction, key, callBack) {
@@ -6,22 +8,27 @@ export default class DefaultAction {
         this.callBack = callBack
     }
 
-    process(input, game) {
+    process(game, input) {
 
         const { command } = this.openInput(input)
         if (command == this.key) {
-            this.callBack(input, game)
+            this.callBack(game, input)
+            return;
         }
         if (this.nextAction) {
-            this.nextAction.process(command, game)
+            this.nextAction.process(game, input)
+        } else {
+            game.sender.sendMsgToCurrentClient(not_found_action_msg)
         }
     }
 
     openInput(input) {
-        input = input.split(" ");
-        let command = input[0];
-        let param = input[1];
+        const inputSplited = input.split(" ");
+        const command = inputSplited[0];
+        inputSplited.shift();
+        const param = inputSplited;
 
         return { command, param }
     }
+
 }
