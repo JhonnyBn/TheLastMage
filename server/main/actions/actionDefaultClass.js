@@ -30,5 +30,4 @@ export default class DefaultAction {
 
         return { command, param }
     }
-
 }

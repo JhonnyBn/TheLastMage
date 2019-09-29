@@ -1,14 +1,5 @@
 import DefaultAction from "./actionDefaultClass"
 
-var helpText =
-    "The current commands are:\n" +
-    "" +
-    "start\t\t\t\t\tTo start the game\n" +
-    "attack <player>\t\t\tTo attack other player\n" +
-    "specialattack <player>\tTo use special attack on other player\n" +
-    "defend\t\t\t\t\tTo defend yourself this turn\n" +
-    "help\t\t\t\t\tTo display this list of commands.\n";
-
 export default class Help extends DefaultAction {
 
     constructor(nextAction) {

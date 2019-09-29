@@ -33,9 +33,15 @@ export default class Defend extends DefaultAction {
             game.sender.sendMsgToCurrentClient("Defending until next turn.");
             game.sender.sendMsgToAllButIgnoreCurrentClient(player.name + " is defending until next turn.");
         } else {
-            game.sender.sendMsgToCurrentClient(
-                'Please wait for your turn, or type "help" for the commands information.'
-            );
+            if (!player.alive) {
+                game.sender.sendMsgToCurrentClient(
+                    "You are dead. Please wait for the game to finish or start a new game."
+                );
+            } else {
+                game.sender.sendMsgToCurrentClient(
+                    'Please wait for your turn, or type "help" for the commands information.'
+                );
+            }
             return;
         }
     }
