@@ -60,7 +60,7 @@ export default class Game {
     // Adiciona um novo jogador
     addPlayer(name) {
         // Se o nome ja existe, nao adiciona
-        if (this.getPlayerByName(name)) {
+        if (this.getPlayerByName(name) != undefined) {
             this.sender.sendMsgToCurrentClient(
                 "Name already in use. Please choose another."
             );

@@ -34,13 +34,14 @@ export default class Attack extends DefaultAction {
             game.sender.sendMsgToCurrentClient("playerNameOrigin not found.")
             return;
         }
+        console.log(player)
 
         if (game.isTheTurnOfThePlayer(playerName)) {
 
             game.sender.sendMsgToAll(
                 playerName + " is attacking " + targetName + "..."
             );
-
+            console.log(player)
             if (player.attack(target)) {
                 game.sender.sendMsgToAll(
                     "Success! Dealt " + player.attackDamage + " damage."

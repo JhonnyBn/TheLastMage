@@ -19,7 +19,7 @@ export default class Join extends DefaultAction {
         }
 
         // Adiciona o player
-        game.addPlayer(param);
+        game.addPlayer(param[0]);
 
     }
 }
