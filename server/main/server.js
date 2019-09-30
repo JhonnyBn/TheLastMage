@@ -21,6 +21,6 @@ export default async function main(datasourceUtil) {
 
     console.log("Started.")
 
-    resolve(currentGame);
+    resolve({ currentGame, socket });
   });
 }
