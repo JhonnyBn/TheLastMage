@@ -4,7 +4,7 @@ export default class Reset extends DefaultAction {
 
     constructor(nextAction) {
         super(nextAction, "reset", Reset.prototype.processCommand)
-        this.helpMsg = "Reset -> To reset the game."
+        this.helpMsg = "reset -> To reset the game."
     }
 
     processCommand(game) {

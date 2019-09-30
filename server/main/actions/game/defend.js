@@ -5,7 +5,7 @@ export default class Defend extends DefaultAction {
 
     constructor(nextAction) {
         super(nextAction, "defend", Defend.prototype.processCommand)
-        this.helpMsg = "defend [playerNameOrigin] -> To defend yourself this turn."
+        this.helpMsg = "defend -> To defend yourself this turn."
     }
 
     processCommand(game, input) {

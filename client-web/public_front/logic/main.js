@@ -5,7 +5,7 @@ var socket = io("http://localhost:8080");
 
 socket.on("connect", function () {
     printMsg("Connected to the server.");
-    printMsg("Type your name:");
+    printMsg("Please type your name to join the game.");
 });
 
 socket.on("message", value => {
@@ -29,6 +29,10 @@ function enviar() {
     let line = document.getElementById("entrada").value;
 
     if (!inAGame) {
+        if(line === "") {
+            alert("Your name cant be blank.")
+            return
+        }
         socket.send("join " + line);
         name = line;
         inAGame = true;
@@ -42,7 +46,7 @@ function enviarChat() {
     let line = document.getElementById("chatEntrada").value;
 
     if (name == "") {
-        alert("Digite seu nome primeiro.")
+        alert("Please inform your name before joining the chat.")
         return
     }
 

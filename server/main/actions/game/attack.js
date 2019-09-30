@@ -4,7 +4,7 @@ export default class Attack extends DefaultAction {
 
     constructor(nextAction) {
         super(nextAction, "attack", Attack.prototype.processCommand)
-        this.helpMsg = "attack [playerNameOrigin] [playerNameTarget] -> To attack other player."
+        this.helpMsg = "attack [TargetPlayerName] -> To attack other player."
     }
 
     processCommand(game, input) {

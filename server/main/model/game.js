@@ -36,6 +36,17 @@ export default class Game {
         );
     }
 
+    // Reboota o jogo (reseta e remove personagens)
+    rebootGame() {
+        this.players = new Array();
+        this.turn = 0;
+        this.currentPlayer = null;
+        this.running = 0;
+        this.sender.sendMsgToAll(
+            "The game has been rebooted.\nSay 'join' to join again and 'start' to begin a new game.\n"
+        );
+    }
+
     // Retorna True se haver somente um jogador vivo
     isGameFinished() {
         let nPlayersAlive = 0;
@@ -59,6 +70,15 @@ export default class Game {
 
     // Adiciona um novo jogador
     addPlayer(name) {
+
+        // O nome nao pode estar vazio
+        if(name === "") {
+            this.sender.sendMsgToCurrentClient(
+                "Your name cant be blank. Please choose another."
+            );
+            return;
+        }
+
         // Se o nome ja existe, nao adiciona
         if (this.getPlayerByName(name) != undefined) {
             this.sender.sendMsgToCurrentClient(
@@ -75,6 +95,21 @@ export default class Game {
     // Retorna um jogador com base em seu NAME
     getPlayerByName(name) {
         return this.players.find(mage => mage.name == name)
+    }
+
+    // Lista o nome dos jogadores em jogo
+    listPlayers() {
+        let names = "";
+        this.players.map(player => names += player.name + ", ")
+        names.slice(0, -2)
+
+        if ( names === "" ) {
+            this.sender.sendMsgToCurrentClient("There are no players in the game.");
+        } else {
+            this.sender.sendMsgToCurrentClient("Players in the game: " + names);
+        }
+
+        return names
     }
 
     // Prepara a proxima rodada

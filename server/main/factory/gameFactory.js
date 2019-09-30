@@ -9,7 +9,7 @@ import Defend from "../actions/game/defend";
 import SpecialAttack from "../actions/game/specialattack";
 import Chat from "../actions/game/chat";
 import Reboot from "../actions/game/reboot";
-
+import ListPlayers from "../actions/game/listplayers";
 
 export default function () {
     const sender = new Sender(new Array());
@@ -22,7 +22,8 @@ export default function () {
     const defend = new Defend(attack);
     const specialAttack = new SpecialAttack(defend);
     const chat = new Chat(specialAttack);
-    const reboot = new Reboot(chat);
+    const listplayers = new ListPlayers(chat);
+    const reboot = new Reboot(listplayers);
 
     return new Game(sender, reboot);
 }

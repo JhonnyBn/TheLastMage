@@ -4,7 +4,7 @@ export default class Chat extends DefaultAction {
 
     constructor(nextAction) {
         super(nextAction, "chat", Chat.prototype.processCommand)
-        this.helpMsg = "chat [playerNameOrigin] [msg] -> To start the game."
+        this.helpMsg = "chat [msg] -> To say something in the chat."
     }
 
     processCommand(game, input) {

@@ -4,7 +4,7 @@ export default class Join extends DefaultAction {
 
     constructor(nextAction) {
         super(nextAction, "join", Join.prototype.processCommand)
-        this.helpMsg = "join [yourName] -> To join the game."
+        this.helpMsg = "join -> To join the game again."
     }
 
     processCommand(game, input) {
@@ -13,7 +13,7 @@ export default class Join extends DefaultAction {
         // Nao colocou o nome
         if (!param) {
             game.sender.sendMsgToCurrentClient(
-                'To join the game, please say "join <yourName>"'
+                'To join the game again, please say "join"'
             );
             return;
         }
