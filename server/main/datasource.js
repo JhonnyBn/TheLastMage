@@ -1,5 +1,4 @@
 import fs from "fs";
-import mage from "./model/mage";
 
 const msgs = new Array()
 
@@ -24,6 +23,7 @@ export function loadMsgs(game) {
                 return;
             }
             const msgsLoaded = JSON.parse(fileData)
+            console.log(msgsLoaded)
             msgsLoaded.forEach(data => {
                 game.processInput(data.msg)
                 msgs.push(data)
@@ -31,5 +31,15 @@ export function loadMsgs(game) {
             resolve(msgs)
         })
 
+    })
+}
+
+export function deleteDatasource(){
+    fs.writeFile('./database.json', "[]", err => {
+        if (err) {
+            console.log('Error writing file', err)
+        } else {
+            console.log('Successfully wrote file')
+        }
     })
 }

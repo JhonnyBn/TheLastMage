@@ -17,8 +17,10 @@ describe("Join Command", function () {
       socketClient1.on("connect", function () {
         console.log("Connected to the server.");
         socketClient1.send("join vinicius")
-        socketClient1.close()
-        setTimeout(() => resolve({ currentGame, socket }), 3000);
+        socketClient1.on("message",() => {
+          resolve({ currentGame, socket })
+          socketClient1.close()
+        })
       });
 
     }
@@ -39,9 +41,10 @@ describe("Join Command", function () {
         console.log("Connected to the server.");
         socket1.send("join vinicius2")
         socket1.send("join vinicius2")
-        socket1.close()
-
-        setTimeout(() => resolve({ currentGame, socket }), 3000);
+        socket1.on("message",() => {
+          resolve({ currentGame, socket })
+          socket1.close()
+        })
       });
 
     }
