@@ -1,3 +1,12 @@
+body{
+  background-color: #f7f7f7;
+}
+
+input{
+  border-radius: 10px;
+  text-align: end;
+}
+
 /* Chat containers */
 .containerChat {
     border: 2px solid #dedede;
