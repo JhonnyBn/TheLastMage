@@ -31,8 +31,5 @@ export function loadMsgs(game) {
             resolve(msgs)
         })
 
-
-    }
-    )
-
+    })
 }

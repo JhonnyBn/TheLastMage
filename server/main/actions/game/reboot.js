@@ -9,11 +9,7 @@ export default class Reboot extends DefaultAction {
 
     processCommand(game) {
 
-        if (game.running) {
-            game.rebootGame();
-        } else {
-            game.sender.sendMsgToCurrentClient("Game is not running.")
-        }
+        game.rebootGame();
 
     }
 }

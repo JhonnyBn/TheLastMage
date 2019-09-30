@@ -101,7 +101,7 @@ export default class Game {
     listPlayers() {
         let names = "";
         this.players.map(player => names += player.name + ", ")
-        names.slice(0, -2)
+        names = names.slice(0, -2)
 
         if ( names === "" ) {
             this.sender.sendMsgToCurrentClient("There are no players in the game.");
