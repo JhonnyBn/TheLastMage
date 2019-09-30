@@ -8,6 +8,7 @@ import Attack from "../actions/game/attack";
 import Defend from "../actions/game/defend";
 import SpecialAttack from "../actions/game/specialattack";
 import Chat from "../actions/game/chat";
+import Reboot from "../actions/game/reboot";
 
 
 export default function () {
@@ -21,6 +22,7 @@ export default function () {
     const defend = new Defend(attack);
     const specialAttack = new SpecialAttack(defend);
     const chat = new Chat(specialAttack);
+    const reboot = new Reboot(chat);
 
-    return new Game(sender, chat);
+    return new Game(sender, reboot);
 }

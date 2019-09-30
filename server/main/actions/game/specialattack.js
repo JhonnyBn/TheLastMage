@@ -4,7 +4,7 @@ export default class SpecialAttack extends DefaultAction {
 
     constructor(nextAction) {
         super(nextAction, "specialattack", SpecialAttack.prototype.processCommand)
-        this.helpMsg = "specialattack <playerNameOrigin> <playerNameTarget> -> To use special attack on other player."
+        this.helpMsg = "specialattack [playerNameOrigin] [playerNameTarget] -> To use special attack on other player."
     }
 
     processCommand(game, input) {

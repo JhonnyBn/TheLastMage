@@ -33,7 +33,8 @@ function enviar() {
         name = line;
         inAGame = true;
     } else {
-        socket.send(`${line}  ${name}`);
+        let command = line.split(" ")
+        socket.send(`${command[0]} ${name} ${command[1]}`);
     }
 }
 
