@@ -43,7 +43,7 @@ export default class SpecialAttack extends DefaultAction {
             }
 
             game.sender.sendMsgToAll(
-                game.name + " is using special attack on " + target.name + "..."
+                player.name + " is using special attack on " + target.name + "..."
             );
 
             if (player.specialAttack(target)) {
