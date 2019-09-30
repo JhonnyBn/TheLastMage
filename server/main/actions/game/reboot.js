@@ -12,7 +12,6 @@ export default class Reboot extends DefaultAction {
         if (game.running) {
             game.resetGame();
             game.players = new Array()
-            game.currentPlayer = null;
         } else {
             game.sender.sendMsgToCurrentClient("Game is not running.")
         }

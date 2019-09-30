@@ -71,5 +71,5 @@ function printChatToUser(msg) {
     msgValue.shift()
     msgValue = msgValue.join(" ")
     output.innerHTML =
-        output.innerHTML + `<div class="container containerChat" style="text-align: right">me:${msgValue.replace(/\n/g, "<br>")}<div>`;
+        output.innerHTML + `<div class="container containerChat" style="text-align: right">${msgValue.replace(/\n/g, "<br>")}<div>`;
 }
