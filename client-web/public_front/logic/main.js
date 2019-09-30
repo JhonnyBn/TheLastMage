@@ -43,7 +43,8 @@ function enviar() {
 }
 
 function enviarChat() {
-    let line = document.getElementById("chatEntrada").value;
+    let input = document.getElementById("chatEntrada");
+    let line = input.value;
 
     if (name == "") {
         alert("Please inform your name before joining the chat.")
@@ -52,12 +53,14 @@ function enviarChat() {
 
     socket.send(`chat ${name} ${line}`);
 
+    input.value = "";
 }
 
 function printMsg(msg) {
     let output = document.getElementById("saida");
     output.innerHTML =
         output.innerHTML + "<br>" + msg.replace(/\n/g, "<br>");
+    output.scrollTop = output.scrollHeight
 }
 
 function printChatOtherUser(msg) {
@@ -67,6 +70,7 @@ function printChatOtherUser(msg) {
     msgValue = msgValue.join(" ")
     output.innerHTML =
         output.innerHTML + `<div class="container containerChat darker" style="text-align: left">${msgValue.replace(/\n/g, "<br>")}<div>`;
+    output.scrollTop = output.scrollHeight
 }
 
 function printChatToUser(msg) {
@@ -76,4 +80,5 @@ function printChatToUser(msg) {
     msgValue = msgValue.join(" ")
     output.innerHTML =
         output.innerHTML + `<div class="container containerChat" style="text-align: right">${msgValue.replace(/\n/g, "<br>")}<div>`;
+    output.scrollTop = output.scrollHeight
 }
