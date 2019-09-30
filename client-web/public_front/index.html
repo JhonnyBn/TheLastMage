@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>Document</title>
+  <title>The Last Mage</title>
   <script src="libs/socket.io.js"></script>
   <script src="logic/main.js"></script>
   <link rel="stylesheet" type="text/css" href="style/main.css" <!-- BootstrapCDN -->
@@ -25,18 +25,23 @@
 </head>
 
 <body>
+  <nav class="navbar navbar-dark bg-dark navbar-expand-sm">
+    <div class="navbar-header">
+      <h2>The Last Mage</h2>
+    </div>
+  </nav>
   <div class="container">
     <div class="row">
-      <div class="col">
+      <div class="col game">
         <form action="javascript:enviar();">
           <input type="text" id="entrada" /><br /><br />
           <input type="submit" value="Enviar" />
         </form>
         <div id="saida">Connecting to the server...</div>
       </div>
-      <div class="col">
+      <div class="col chat">
         <form action="javascript:enviarChat();">
-          <h1>Chat:</h1>
+          <h3>Chat:</h3>
           <input type="text" id="chatEntrada" /><br /><br />
           <input type="submit" value="Enviar" />
         </form>
@@ -44,6 +49,11 @@
       </div>
     </div>
   </div>
+  <footer class="page-footer font-small py-3">
+      <div class="footer-copyright text-center py-3">
+        <p class="mb-0">© 2019 The Last Mage</p>
+      </div>
+    </footer>
 </body>
 
 
