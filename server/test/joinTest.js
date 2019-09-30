@@ -13,7 +13,6 @@ describe("Join Command", function () {
   it("join player", function () {
     let testPromise = new Promise(async resolve => {
       const { currentGame, socket } = await main(mockDatabase)
-      console.log(currentGame)
       const socketClient1 = clientSocket("http://localhost:8080")
       socketClient1.on("connect", function () {
         console.log("Connected to the server.");
@@ -31,11 +30,6 @@ describe("Join Command", function () {
     });
   });
 
-});
-
-
-describe("Join Command", function () {
-  this.timeout(15000);
   it("join player 2 times.", function () {
     let testPromise = new Promise(async resolve => {
       const { currentGame, socket } = await main(mockDatabase)
@@ -54,7 +48,6 @@ describe("Join Command", function () {
     )
     return testPromise.then(function (result) {
       const { currentGame, socket } = result
-      console.log(currentGame)
       assert.equal(currentGame.players.length, 1)
       socket.close()
     });
