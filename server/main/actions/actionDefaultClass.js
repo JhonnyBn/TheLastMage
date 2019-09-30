@@ -11,7 +11,6 @@ export default class DefaultAction {
     process(game, input) {
 
         const { command } = this.openInput(input)
-        console.log(command)
         if (command == this.key) {
             this.callBack(game, input)
             return;

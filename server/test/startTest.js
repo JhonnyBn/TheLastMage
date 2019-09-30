@@ -19,8 +19,16 @@ describe("Start Command", function () {
         socketClient1.send("join vinicius")
         socketClient1.send("join clemente")
         socketClient1.send("start")
-        socketClient1.close()
-        setTimeout(() => resolve({ currentGame, socket }), 3000);
+        let count = 0
+        socketClient1.on("message",() => {
+          count++
+          if(count == 3)
+          {
+            resolve({ currentGame, socket })
+            socketClient1.close()
+          }
+          
+        })
       });
 
     }
@@ -40,8 +48,10 @@ describe("Start Command", function () {
         console.log("Connected to the server.");
         socketClient1.send("join vinicius")
         socketClient1.send("start")
-        socketClient1.close()
-        setTimeout(() => resolve({ currentGame, socket }), 3000);
+        socketClient1.on("message",() => {
+          resolve({ currentGame, socket })
+          socketClient1.close()
+        })
       });
 
     }
@@ -60,8 +70,10 @@ describe("Start Command", function () {
       socketClient1.on("connect", function () {
         console.log("Connected to the server.");
         socketClient1.send("start")
-        socketClient1.close()
-        setTimeout(() => resolve({ currentGame, socket }), 3000);
+        socketClient1.on("message",() => {
+          resolve({ currentGame, socket })
+          socketClient1.close()
+        })
       });
 
     }

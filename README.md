@@ -18,33 +18,63 @@ Versões futuras podem ter power-ups ou classes para mudar a habilidade especial
 
   - 2 a 4 jogadores (clientes)
   - Servidor do jogo
-  - Banco de dados
+  - Banco de dados próprio
  
 **Criando o server:**
 
   - Certifique-se de instalar o Node.Js - https://nodejs.org/en/download/
   - Abra um terminal e clone o repositório - https://github.com/JhonnyBn/TheLastMage.git
+  - Abra a pasta do servidor
+    - `cd server`
   - Instalar as dependências:
-    - npm install 
-    - npm install mocha
-  - Digitar no terminal: npm start
-  - Abrir outro terminal para o cliente e digitar o comando: npm start
+    - `npm install`
+  - Iniciar o server:
+    - `npm start`
+  - Siga a próxima seção para criar clientes
+  
+**Criando clientes (versão terminal):**
+
+  - Certifique-se de instalar o Node.Js - https://nodejs.org/en/download/
+  - Certifique-se que o servidor esteja rodando
+  - Abra um terminal e clone o repositório - https://github.com/JhonnyBn/TheLastMage.git
+  - Abra a pasta do cliente
+    - `cd client`
+  - Instalar as dependências:
+    - `npm install`
+  - Iniciar o client:
+    - `npm start`
+  - Abra quantos clientes quiser, um por terminal
+  
+**Criando clientes (versão web):**
+
+  - Certifique-se de instalar o Node.Js - https://nodejs.org/en/download/
+  - Certifique-se que o servidor esteja rodando
+  - Abra um terminal e clone o repositório - https://github.com/JhonnyBn/TheLastMage.git
+  - Abra a pasta do cliente web
+    - `cd client-web/public_front/`
+  - Abra o arquivo do cliente-web `index.html` no seu navegador preferido e bom jogo!
+  - Abra quantos clientes quiser, um por aba
   
 **Comandos:**
   
   - reboot: Reinicia o jogo (deleta todos os jogadores).
-  - chat [playerNameOrigin] [msg] -> Para mandar mensagem no chat. 
-  - specialattack [playerNameOrigin] [playerNameTarget] -> Usar ataque especial contra outro jogador.
-  - defend [playerNameOrigin] -> Se defender no turno.
-  - attack [playerNameOrigin] [playerNameTarget] -> Atacar outro jogador.
+  - chat [msg] -> Para mandar mensagem no chat. 
+  - specialattack [TargetPlayerName] -> Usar ataque especial contra outro jogador.
+  - defend -> Se defender no turno.
+  - attack [TargetPlayerName] -> Atacar outro jogador.
   - Reset -> Resetar o jogo.
   - start -> Começar o jogo.
-  - join [yourName] -> Para participar do jogo.
+  - join -> Para participar do jogo.
   - help -> Mostra todos os comandos do jogo.
 
 **Testes:**
 
-  - Instalar Mocha 
-  - É importante que esteja na pasta do projeto 
-  - Abra um terminal e digite o comando: mocha
+  - Certifique-se de instalar o Node.Js - https://nodejs.org/en/download/
+  - Abra um terminal e clone o repositório - https://github.com/JhonnyBn/TheLastMage.git
+  - Abra a pasta do servidor:
+    - `cd server`
+  - Instalar as dependências:
+    - `npm install`
+  - Iniciar os testes:
+    - `npm test`
 
