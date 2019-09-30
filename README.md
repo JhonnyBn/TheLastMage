@@ -52,7 +52,7 @@ Versões futuras podem ter power-ups ou classes para mudar a habilidade especial
   - Abra um terminal e clone o repositório - https://github.com/JhonnyBn/TheLastMage.git
   - Abra a pasta do cliente web
     - `cd client-web/public_front/`
-  - Abra o arquivo do cliente-web no seu navegador preferido e bom jogo!
+  - Abra o arquivo do cliente-web `index.html` no seu navegador preferido e bom jogo!
   - Abra quantos clientes quiser, um por aba
   
 **Comandos:**
