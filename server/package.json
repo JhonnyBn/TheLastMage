@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --require @babel/register",
-    "start": "babel-node main/server.js ",
+    "start": "babel-node main/index.js ",
     "start-dev": "nodemon --ignore '*.json' --exec babel-node main/server.js "
   },
   "repository": {
@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/JhonnyBn/TheLastMage#readme",
   "dependencies": {
+    "@babel/runtime": "^7.6.2",
     "socket.io": "^2.2.0"
   },
   "nodemonConfig": {
@@ -27,14 +28,16 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/cli": "^7.6.2",
     "@babel/core": "^7.6.2",
     "@babel/node": "^7.6.2",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/preset-env": "^7.6.2",
     "@babel/register": "^7.6.2",
     "chai": "^4.2.0",
     "mocha": "^6.2.1",
-    "nodemon": "^1.19.3"
+    "nodemon": "^1.19.3",
+    "socket.io-client": "^2.2.0"
   }
 }
