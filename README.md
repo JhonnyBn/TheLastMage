@@ -19,7 +19,12 @@ Versões futuras podem ter power-ups ou classes para mudar a habilidade especial
   - 2 a 4 jogadores (clientes)
   - Servidor do jogo
   - Banco de dados próprio
- 
+
+**Screenshots:**
+
+![Screenshot 1](screenshots\screenshot1.png)
+![Screenshot 2](screenshots\screenshot2.png)
+
 **Criando o server:**
 
   - Certifique-se de instalar o Node.Js - https://nodejs.org/en/download/
