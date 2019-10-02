@@ -27,15 +27,16 @@ Versões futuras podem ter power-ups ou classes para mudar a habilidade especial
 
 **Comandos:**
   
-  - reboot: Reinicia o jogo (deleta todos os jogadores).
-  - chat [msg] -> Para mandar mensagem no chat. 
-  - specialattack [TargetPlayerName] -> Usar ataque especial contra outro jogador.
-  - defend -> Se defender no turno.
-  - attack [TargetPlayerName] -> Atacar outro jogador.
-  - Reset -> Resetar o jogo.
+  - help -> Mostra os comandos do jogo.
+  - defend -> Se defender até seu próximo turno.
+  - attack [TargetPlayerName] -> Atacar o jogador.
+  - specialattack [TargetPlayerName] -> Usar ataque especial no jogador.
+  - listplayers -> Lista os jogadores que estão jogando
   - start -> Começar o jogo.
+  - reset -> Reinicia o jogo.
+  - reboot -> Reinicia o jogo e deleta todos os jogadores (é necessário dar join novamente para jogar).
   - join -> Para participar do jogo.
-  - help -> Mostra todos os comandos do jogo.
+  - chat [msg] -> Para mandar mensagem no chat.
 
 **Criando o server:**
 
