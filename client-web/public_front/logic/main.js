@@ -33,8 +33,8 @@ function enviar() {
             alert("Your name cant be blank.")
             return
         }
-        socket.send("join " + line);
-        name = line;
+        name = line.split(" ")[0];
+        socket.send("join " + name);
         inAGame = true;
     } else {
         let command = line.split(" ")
