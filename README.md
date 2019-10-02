@@ -25,6 +25,18 @@ Versões futuras podem ter power-ups ou classes para mudar a habilidade especial
 ![Screenshot 1](screenshots/screenshot1.png)
 ![Screenshot 2](screenshots/screenshot2.png)
 
+**Comandos:**
+  
+  - reboot: Reinicia o jogo (deleta todos os jogadores).
+  - chat [msg] -> Para mandar mensagem no chat. 
+  - specialattack [TargetPlayerName] -> Usar ataque especial contra outro jogador.
+  - defend -> Se defender no turno.
+  - attack [TargetPlayerName] -> Atacar outro jogador.
+  - Reset -> Resetar o jogo.
+  - start -> Começar o jogo.
+  - join -> Para participar do jogo.
+  - help -> Mostra todos os comandos do jogo.
+
 **Criando o server:**
 
   - Certifique-se de instalar o Node.Js - https://nodejs.org/en/download/
@@ -44,9 +56,9 @@ Versões futuras podem ter power-ups ou classes para mudar a habilidade especial
   - Abra um terminal e clone o repositório - https://github.com/JhonnyBn/TheLastMage.git
   - Abra a pasta do cliente
     - `cd client`
-  - Instalar as dependências:
+  - Instale as dependências:
     - `npm install`
-  - Iniciar o client:
+  - Inicie o client:
     - `npm start`
   - Abra quantos clientes quiser, um por terminal
   
@@ -60,26 +72,14 @@ Versões futuras podem ter power-ups ou classes para mudar a habilidade especial
   - Abra o arquivo do cliente-web `index.html` no seu navegador preferido e bom jogo!
   - Abra quantos clientes quiser, um por aba
   
-**Comandos:**
-  
-  - reboot: Reinicia o jogo (deleta todos os jogadores).
-  - chat [msg] -> Para mandar mensagem no chat. 
-  - specialattack [TargetPlayerName] -> Usar ataque especial contra outro jogador.
-  - defend -> Se defender no turno.
-  - attack [TargetPlayerName] -> Atacar outro jogador.
-  - Reset -> Resetar o jogo.
-  - start -> Começar o jogo.
-  - join -> Para participar do jogo.
-  - help -> Mostra todos os comandos do jogo.
-
-**Testes:**
+**Testes Automatizados:**
 
   - Certifique-se de instalar o Node.Js - https://nodejs.org/en/download/
   - Abra um terminal e clone o repositório - https://github.com/JhonnyBn/TheLastMage.git
   - Abra a pasta do servidor:
     - `cd server`
-  - Instalar as dependências:
+  - Instale as dependências:
     - `npm install`
-  - Iniciar os testes:
+  - Inicie os testes:
     - `npm test`
 
