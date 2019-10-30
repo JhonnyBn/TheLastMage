@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../src/main/server/index.js"],"names":["datasource"],"mappings":";;;;;;AAAA;;AACA;;AAEA,wBAAOA,UAAP","sourcesContent":["import server from \"./server\"\r\nimport * as datasource from \"./datasource\"\r\n\r\nserver(datasource)"],"file":"index.js"}
