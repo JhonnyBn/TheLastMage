@@ -6,7 +6,7 @@ export default class Sender {
 
     sendMsgToAll(msg) {
         this.connections.forEach(connection => {
-            connection.write({ user: currentClient, text: msg });
+            connection.write({ user: this.currentClient, text: msg });
             console.log(msg);
         });
     }
@@ -15,13 +15,12 @@ export default class Sender {
         this.connections
             .filter(client => client.request.user != this.currentClient)
             .forEach(connection => {
-                connection.write({ user: currentClient, text: msg });
+                connection.write({ user: this.currentClient, text: msg });
             });
         console.log(msg);
     }
 
     sendMsgToCurrentClient(msg) {
-        console.log(this.connections)
         this.connections
             .filter(client => client.request.user == this.currentClient)
             .forEach(client => client.write({ user: this.currentClient, text: msg }))

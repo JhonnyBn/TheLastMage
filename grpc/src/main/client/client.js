@@ -36,14 +36,14 @@ function startChat() {
     channel.on("data", onData);
 
     rl.on("line", function (text) {
-        client.send({ user: username, text: text }, res => { });
+        let command = text.split(" ")
+        client.send({ user: username, text: `${command[0]} ${username} ${command[1]}` }, res => { });
     });
 }
 
 //When server send a message
 function onData(message) {
-    console.log(message)
-    console.log(`${message.user}: ${message.text}`);
+    console.log(`${message.text}`);
 }
 
 //Ask user name then start the chat

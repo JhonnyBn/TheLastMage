@@ -21,7 +21,6 @@ const proto = grpc.loadPackageDefinition(
 // Receive message from client joining
 function join(call, callback) {
     console.log("client connected");
-    console.log(call)
     currentGame.sender.connections.push(call);
     call.write({ user: "Server", text: "new user joined ..." })
 }
@@ -31,7 +30,6 @@ async () => await datasourceUtil.loadMsgs(currentGame);
 
 // Receive message from client
 function send(call, callback) {
-    console.log(call)
     datasourceUtil.saveMsg(call.request.text)
     currentGame.sender.currentClient = call.request.user;
     console.log(call.request)
