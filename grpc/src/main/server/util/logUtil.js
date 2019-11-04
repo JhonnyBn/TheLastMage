@@ -1,6 +1,6 @@
 import fs from "fs";
 import loginService from "../service/LoginService";
-import { datasource } from "../model/datasource";
+import { datasource, datasourceValue } from "../model/datasource";
 
 const logSizeCacheSize = 20
 
@@ -24,18 +24,19 @@ export function load() {
     fs.readFile('./log.txt', "utf8", (err, fileData) => {
         if (err) return
         const logsInString = fileData.split(";")
-        datasource.logSize = logsInString.length
-        if (datasource.logSize >= logSizeCacheSize) {
-            const cacheName = parseInt(datasource.logSize / logSizeCacheSize)
+        const cacheSize = logsInString.length - 1
+        if (cacheSize >= logSizeCacheSize) {
+            const cacheName = parseInt(cacheSize / logSizeCacheSize)
             fs.readFile(`datasource${cacheName}.json`, "utf8", (err, fileData) => {
                 const cacheDatasource = JSON.parse(fileData)
-                datasource.clients = cacheDatasource.clients
+                datasourceValue.data = cacheDatasource
                 callServices(logsInString.slice(cacheName * logSizeCacheSize))
             })
         }
         else {
             callServices(logsInString)
         }
+        datasource.logSize = cacheSize
 
     }
     )
@@ -58,5 +59,6 @@ function callServices(logsInString) {
 
 
 export const action = {
-    login: "login"
+    login: "login",
+    createRoom: "create_room"
 }

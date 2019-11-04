@@ -4,6 +4,7 @@ import * as datasourceUtil from "./util/datasourceUtil"
 import gameFactory from "./factory/gameFactory"
 import loginController from "./controller/LoginController"
 import * as logUtil from "./util/logUtil"
+import { createRoom } from './controller/RoomController';
 
 const server = new grpc.Server();
 const SERVER_ADDRESS = "0.0.0.0:5001";
@@ -43,7 +44,8 @@ function send(call, callback) {
 server.addService(proto.game.Actions.service, {
     join: join,
     send: send,
-    login: loginController
+    login: loginController,
+    createRoom: createRoom
 });
 
 server.bind(SERVER_ADDRESS, grpc.ServerCredentials.createInsecure());

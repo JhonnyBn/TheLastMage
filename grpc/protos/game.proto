@@ -6,6 +6,14 @@ service Actions { //Service class to be used by the clients
     rpc join(Join) returns (stream Message){}
     rpc send(Message) returns (Message){}
     rpc login(Login) returns(LoginResponse){}
+    rpc createRoom(CreateRoomRequest) returns(CreateRoomResponse){}
+}
+message CreateRoomRequest{
+    string name = 1;
+}
+message CreateRoomResponse{
+    string id = 1;
+    string name = 2;
 }
 message Login{
     string username = 1;
