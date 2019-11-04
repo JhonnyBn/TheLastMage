@@ -1,12 +1,12 @@
-import * as protoLoader from '@grpc/proto-loader';
-import * as grpc from 'grpc';
+import * as protoLoader from '@grpc/proto-loader'
+import * as grpc from 'grpc'
 import * as readline from 'readline'
 
 //Read terminal Lines
 var rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
-});
+})
 
 //Load the protobuf
 var proto = grpc.loadPackageDefinition(
@@ -17,38 +17,48 @@ var proto = grpc.loadPackageDefinition(
         defaults: true,
         oneofs: true
     })
-);
+)
 
-const REMOTE_SERVER = "0.0.0.0:5001";
+const REMOTE_SERVER = "0.0.0.0:5001"
 
-let username;
+let username
 
 //Create gRPC client
 let client = new proto.game.Actions(
     REMOTE_SERVER,
     grpc.credentials.createInsecure()
-);
+)
 
 //Start the stream between server and client
-function startChat() {
-    let channel = client.join({ user: username }, { user: username });
+function startChat(password) {
+    client.login({ username: username, password: password }, (err, response) => {
+        console.log("msg enviada", response)
+        main()
+    })
 
-    channel.on("data", onData);
+    //let channel = client.join({ user: username }, { user: username })
+    //channel.on("data", onData)
 
-    rl.on("line", function (text) {
-        let command = text.split(" ")
-        client.send({ user: username, text: `${command[0]} ${username} ${command[1]}` }, res => { });
-    });
+    //rl.on("line", function (text) {
+    //    let command = text.split(" ")
+    //    client.send({ user: username, text: `${command[0]} ${username} ${command[1]}` }, res => { })
+    //})
 }
 
 //When server send a message
 function onData(message) {
-    console.log(`${message.text}`);
+    console.log(`${message.text}`)
 }
 
-//Ask user name then start the chat
-rl.question("What's ur name? ", answer => {
-    username = answer;
+function main() {
 
-    startChat();
-});
+    //Ask user name then start the chat
+    rl.question("What's ur name? ", answer => {
+        username = answer;
+        rl.question("What's ur password? ", answer2 => {
+            startChat(answer2);
+        })
+    })
+
+}
+main()

@@ -5,6 +5,15 @@ package game; //Optional: unique package name.
 service Actions { //Service class to be used by the clients
     rpc join(Join) returns (stream Message){}
     rpc send(Message) returns (Message){}
+    rpc login(Login) returns(LoginResponse){}
+}
+message Login{
+    string username = 1;
+    string password = 2;
+}
+message LoginResponse{
+    string username = 1;
+    string success = 2;
 }
 message Join{
     string user = 1;
