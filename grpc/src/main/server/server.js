@@ -1,6 +1,5 @@
 import * as protoLoader from '@grpc/proto-loader';
 import * as grpc from 'grpc';
-import * as datasourceUtil from "./util/datasourceUtil"
 import gameFactory from "./factory/gameFactory"
 import loginController from "./controller/LoginController"
 import * as logUtil from "./util/logUtil"

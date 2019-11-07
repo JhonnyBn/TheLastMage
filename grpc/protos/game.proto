@@ -7,7 +7,19 @@ service Actions { //Service class to be used by the clients
     rpc send(Message) returns (Message){}
     rpc login(Login) returns(LoginResponse){}
     rpc createRoom(CreateRoomRequest) returns(CreateRoomResponse){}
+    rpc listRooms(ListRoomsRequest) returns(ListRoomsResponse){}
 }
+
+message ListRoomsRequest{
+}
+message RoomResponse{
+    string id = 1;
+    string string = 2;
+}
+message ListRoomsResponse{
+    repeated RoomResponse rooms = 1;
+}
+
 message CreateRoomRequest{
     string name = 1;
 }
