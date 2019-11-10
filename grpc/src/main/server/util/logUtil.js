@@ -1,19 +1,17 @@
 import fs from "fs";
 import loginService from "../service/LoginService";
-import { datasource } from "../model/datasource";
+import { datasource, serverProperties } from "../model/datasource";
 
-const LOG_SIZE_CACHE_SIZE = 3
-const LOG_SERVER_PREFIX = "log_server"
 let logAtualName = ""
 export function save(log) {
     console.log(datasource)
     datasource.logSize += 1
     console.log(datasource.logSize)
-    if (datasource.logSize % LOG_SIZE_CACHE_SIZE == 0) {
-        const logSize = datasource.logSize / LOG_SIZE_CACHE_SIZE
-        logAtualName = `${LOG_SERVER_PREFIX}_${logSize + 1}.txt`
+    if (datasource.logSize % serverProperties.logSizeCacheSize == 0) {
+        const logSize = datasource.logSize / serverProperties.logSizeCacheSize
+        logAtualName = `${serverProperties.logServerPrefix}_${logSize + 1}.txt`
         fs.appendFile(
-            `${LOG_SERVER_PREFIX}_datasource${logSize}.json`,
+            `${serverProperties.logServerPrefix}_datasource${logSize}.json`,
             JSON.stringify(datasource),
             (err) => { if (err) throw err; else console.log('Saved!') }
         )
@@ -28,11 +26,11 @@ export function save(log) {
 export function load() {
     datasource.data = {}
     const files = fs.readdirSync("./")
-    const serverFiles = files.filter(file => file.indexOf(LOG_SERVER_PREFIX) > -1)
+    const serverFiles = files.filter(file => file.indexOf(serverProperties.logServerPrefix) > -1)
     const serverLogsFiles = serverFiles.filter(file => file.indexOf("datasource") <= -1)
     const serverDatabasesFiles = serverFiles.filter(file => file.indexOf("datasource") > -1)
     const sortedDatabasesFiles = serverDatabasesFiles.sort(file => getIndeOfDatasourceFileName(file))
-    logAtualName = LOG_SERVER_PREFIX + "_1.txt"
+    logAtualName = serverProperties.logServerPrefix + "_1.txt"
     if (sortedDatabasesFiles.length > 0) {
         const lastDatabase = sortedDatabasesFiles[0]
         const lastDatabaseIndex = getIndeOfDatasourceFileName(lastDatabase)
@@ -41,7 +39,7 @@ export function load() {
         datasource.data = jsonData.data
 
         datasource.logSize = jsonData.logSize - 1
-        console.log(datasource )
+        console.log(datasource)
         executeLogFile(serverLogsFiles
             .filter(file => getIndeOfLogFileName(file) > lastDatabaseIndex))
 
@@ -55,22 +53,22 @@ export function load() {
 
 }
 function executeLogFile(files) {
-    files.sort(file => getIndeOfLogFileName(file) * -1) 
-    .forEach(file => {
-        const content = fs.readFileSync(file, "utf8")
-        const logsInString = content.split(";")
-        datasource.logSize += logsInString.length -1
-        console.log(datasource)
-        logAtualName = LOG_SERVER_PREFIX + "_" + getIndeOfLogFileName(file) + ".txt"
-        console.log(logAtualName)
-        callServices(logsInString)
-    })
+    files.sort(file => getIndeOfLogFileName(file) * -1)
+        .forEach(file => {
+            const content = fs.readFileSync(file, "utf8")
+            const logsInString = content.split(";")
+            datasource.logSize += logsInString.length - 1
+            console.log(datasource)
+            logAtualName = serverProperties.logServerPrefix + "_" + getIndeOfLogFileName(file) + ".txt"
+            console.log(logAtualName)
+            callServices(logsInString)
+        })
 }
 function getIndeOfDatasourceFileName(datasourceName) {
-    return parseInt(datasourceName.replace(LOG_SERVER_PREFIX + "_datasource", "").replace(".json", ""))
+    return parseInt(datasourceName.replace(serverProperties.logServerPrefix + "_datasource", "").replace(".json", ""))
 }
 function getIndeOfLogFileName(datasourceName) {
-    return parseInt(datasourceName.replace(LOG_SERVER_PREFIX + "_", "").replace(".json", ""))
+    return parseInt(datasourceName.replace(serverProperties.logServerPrefix + "_", "").replace(".json", ""))
 }
 
 function loadFiles(serverFiles, serverLogsFiles) {
@@ -78,18 +76,18 @@ function loadFiles(serverFiles, serverLogsFiles) {
         if (serverLogsFiles.length > 0) {
 
             const lastFileName = serverLogsFiles
-                .map(file => file.replace(LOG_SERVER_PREFIX, ""))
+                .map(file => file.replace(serverProperties.logServerPrefix, ""))
                 .sort(file => parseInt(file.replace("_", "").replace(".txt", "")))
             [0]
             console.log("lastFileName", lastFileName)
-            fs.readFile(LOG_SERVER_PREFIX + lastFileName, "utf8", async (err, fileData) => {
+            fs.readFile(serverProperties.logServerPrefix + lastFileName, "utf8", async (err, fileData) => {
                 if (err) {
                     throw err
                 }
                 const logsInString = fileData.split(";")
                 const cacheSize = logsInString.length - 1
-                if (cacheSize >= LOG_SIZE_CACHE_SIZE) {
-                    const cacheName = LOG_SERVER_PREFIX + "_datasource" + lastFileName.replace(".txt", ".json").replace("_", "")
+                if (cacheSize >= serverProperties.logSizeCacheSize) {
+                    const cacheName = serverProperties.logServerPrefix + "_datasource" + lastFileName.replace(".txt", ".json").replace("_", "")
                     fs.readFile(cacheName, "utf8", async (err, fileData) => {
                         try {
                             if (err) {
@@ -97,10 +95,10 @@ function loadFiles(serverFiles, serverLogsFiles) {
                             }
                             const cacheDatasource = JSON.parse(fileData)
                             datasource.data = cacheDatasource
-                            callServices(logsInString.slice(cacheName * LOG_SIZE_CACHE_SIZE))
+                            callServices(logsInString.slice(cacheName * serverProperties.logSizeCacheSize))
                         } catch (e) {
                             console.log(err)
-                            await loadFiles(serverFiles, serverLogsFiles.filter(file => file != LOG_SERVER_PREFIX + lastFileName))
+                            await loadFiles(serverFiles, serverLogsFiles.filter(file => file != serverProperties.logServerPrefix + lastFileName))
                             callServices(logsInString)
                         }
                     })
@@ -110,14 +108,14 @@ function loadFiles(serverFiles, serverLogsFiles) {
                     callServices(logsInString)
                 }
                 datasource.logSize = cacheSize
-                logAtualName = `${LOG_SERVER_PREFIX}_${parseInt(cacheSize / LOG_SIZE_CACHE_SIZE)}.txt`
+                logAtualName = `${serverProperties.logServerPrefix}_${parseInt(cacheSize / serverProperties.logSizeCacheSize)}.txt`
                 console.log("logAtualName", logAtualName)
                 resolve()
 
             }
             )
         } else {
-            logAtualName = `${LOG_SERVER_PREFIX}_1.txt`
+            logAtualName = `${serverProperties.logServerPrefix}_1.txt`
             resolve()
         }
     })

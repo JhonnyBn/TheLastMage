@@ -36,3 +36,5 @@ function main() {
 function hashOf(value) {
     return crypto.createHash('md5').update(value).digest("hex")
 }
+
+main()

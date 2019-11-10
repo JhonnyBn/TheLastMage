@@ -4,21 +4,45 @@ import gameFactory from "./factory/gameFactory"
 import loginController from "./controller/LoginController"
 import * as logUtil from "./util/logUtil"
 import { createRoom } from './controller/RoomController';
+import { serverProperties } from "./model/datasource"
 
-const server = new grpc.Server();
-const SERVER_ADDRESS = "0.0.0.0:5001";
-const PROTO_PATH = __dirname + '../../../../protos/game.proto';
+const currentGame = gameFactory()
+serverProperties.port = parseInt(process.argv[2])
+serverProperties.logSizeCacheSize = 3
+serverProperties.logServerPrefix = serverProperties.port + "_log_server"
+if (isNaN(serverProperties.port)) throw ("Please set a port.")
 
-// Load protobuf
-const proto = grpc.loadPackageDefinition(
-    protoLoader.loadSync(PROTO_PATH, {
-        keepCase: true,
-        longs: String,
-        enums: String,
-        defaults: true,
-        oneofs: true
-    })
-);
+function main() {
+
+    const server = new grpc.Server();
+    const SERVER_ADDRESS = `0.0.0.0:${serverProperties.port}`;
+    const PROTO_PATH = __dirname + '../../../../protos/game.proto';
+
+    // Load protobuf
+    const proto = grpc.loadPackageDefinition(
+        protoLoader.loadSync(PROTO_PATH, {
+            keepCase: true,
+            longs: String,
+            enums: String,
+            defaults: true,
+            oneofs: true
+        })
+    );
+
+    // Define server with the methods and start it
+    server.addService(proto.game.Actions.service, {
+        join: join,
+        send: send,
+        login: loginController,
+        createRoom: createRoom
+    });
+
+    server.bind(SERVER_ADDRESS, grpc.ServerCredentials.createInsecure());
+
+    server.start();
+
+    logUtil.load()
+}
 
 // Receive message from client joining
 function join(call, callback) {
@@ -26,9 +50,6 @@ function join(call, callback) {
     currentGame.sender.connections.push(call);
     call.write({ user: "Server", text: "new user joined ..." })
 }
-
-const currentGame = gameFactory()
-async () => await datasourceUtil.loadMsgs(currentGame);
 
 // Receive message from client
 function send(call, callback) {
@@ -39,16 +60,4 @@ function send(call, callback) {
 
 }
 
-// Define server with the methods and start it
-server.addService(proto.game.Actions.service, {
-    join: join,
-    send: send,
-    login: loginController,
-    createRoom: createRoom
-});
-
-server.bind(SERVER_ADDRESS, grpc.ServerCredentials.createInsecure());
-
-server.start();
-
-logUtil.load()
+main()

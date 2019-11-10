@@ -19,7 +19,7 @@ var proto = grpc.loadPackageDefinition(
     })
 )
 
-const REMOTE_SERVER = "0.0.0.0:5001"
+const REMOTE_SERVER = "0.0.0.0:8081"
 
 let username
 
