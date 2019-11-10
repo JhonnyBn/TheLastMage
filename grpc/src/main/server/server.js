@@ -30,12 +30,8 @@ function loadServerProperties() {
     serverProperties.logServerPrefix = serverProperties.port + "_log_server"
     console.log(serverProperties.port.toString(), hashOf(serverProperties.port.toString()))
     const fileRouteName = hashOf(serverProperties.port.toString()) + ".json"
-    const routes = JSON.parse(fs.readFileSync(fileRouteName), "utf8").route
-    routes.push({ hash: hashOf(serverProperties.port.toString()) })
-    routes.sort((a, b) => a.hash < b.hash ? -1 : a.hash > b.hash ? 1 : 0)
-    serverProperties.routes = []
-    serverProperties.routes.push(routes[routes.length - 1])
-    routes.forEach(route => route.hash != routes[routes.length - 1].hash ? serverProperties.routes.push(route) : null)
+    const routes = JSON.parse(fs.readFileSync(fileRouteName), "utf8")
+    serverProperties.routes = routes
     serverProperties.routes.forEach(element => {
 
         if (element.port != null) {

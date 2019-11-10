@@ -9,6 +9,7 @@ export function verifyConsistentHash(value) {
     console.log(serverProperties.routes)
     const hashValue = hashOf(value)
     console.log(hashValue)
+    console.log(hashValue, serverProperties.routes[0].hash)
     if (hashValue >= serverProperties.routes[0].hash) {
         console.log(hashValue, serverProperties.routes[0].hash)
         return serverProperties.routes[0]

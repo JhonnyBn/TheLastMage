@@ -25,9 +25,15 @@ function main() {
         for (let j = 0; parseInt(j) < parseInt(Math.sqrt(serversSorted.length + 1)); j++) {
             route.push(serversSorted[(Math.pow(2, j) + index) % serversSorted.length])
         }
+        route.push({ hash: server.hash })
+        route.sort((a, b) => a.hash < b.hash ? -1 : a.hash > b.hash ? 1 : 0)
+
+        const routeWithServer = []
+        routeWithServer.push(route[route.length - 1])
+        route.forEach(r => r.hash != route[route.length - 1].hash ? routeWithServer.push(r) : null)
         routes.push({
             server,
-            routes: { route }
+            routes: routeWithServer
         })
     }
     )
