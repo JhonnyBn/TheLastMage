@@ -19,7 +19,7 @@ var proto = grpc.loadPackageDefinition(
     })
 )
 
-const REMOTE_SERVER = "0.0.0.0:8081"
+const REMOTE_SERVER = "0.0.0.0:8080"
 
 let username
 
@@ -32,6 +32,7 @@ let client = new proto.game.Actions(
 //Start the stream between server and client
 function startChat(password) {
     client.login({ username: username, password: password }, (err, response) => {
+        if (err) throw err
         console.log("msg enviada", response)
         main()
     })

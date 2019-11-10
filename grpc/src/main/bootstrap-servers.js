@@ -1,4 +1,5 @@
 import crypto from "crypto"
+import fs from "fs"
 
 const numberOfServer = parseInt(process.argv[2])
 const inicialPort = parseInt(process.argv[3])
@@ -14,9 +15,9 @@ if (inicialPort <= 1024 || isNaN(inicialPort)) throw ("inicial port should be Bi
 function main() {
 
     for (let index = inicialPort; index < (inicialPort + numberOfServer); index++) {
-        servers.push(hashOf(index.toString()))
+        servers.push({ hash: hashOf(index.toString()), port: index })
     }
-    servers.sort()
+    servers.sort((a, b) => a.hash < b.hash ? -1 : a.hash > b.hash ? 1 : 0)
     serversSorted.push(servers[servers.length - 1])
     servers.forEach(server => server != servers[servers.length - 1] ? serversSorted.push(server) : null)
     serversSorted.forEach((server, index) => {
@@ -26,11 +27,17 @@ function main() {
         }
         routes.push({
             server,
-            route
+            routes: { route }
         })
     }
     )
     console.log(routes)
+    routes.forEach(route => {
+        fs.writeFile(route.server.hash + ".json", JSON.stringify(route.routes), function (err) {
+            if (err) throw err
+            console.log('Saved!')
+        })
+    })
 }
 
 function hashOf(value) {

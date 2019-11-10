@@ -3,4 +3,5 @@ export let serverProperties = {
     logSizeCacheSize: "",
     logServerPrefix: "",
     port: "",
+    routes: ""
 }
