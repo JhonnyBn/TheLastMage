@@ -1,1 +1,0 @@
-{"action":"create_room","request":{"name":"abc"}};{"action":"create_room","request":{"name":"b"}};{"action":"create_room","request":{"name":"4"}};

@@ -1,1 +1,1 @@
-{"action":"login","request":{"username":"c","password":"c"}};{"action":"login","request":{"username":"vi","password":""}};
+{"action":"create_room","request":{"name":"9"}};

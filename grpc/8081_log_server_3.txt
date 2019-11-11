@@ -1,1 +1,0 @@
-{"action":"login","request":{"username":"v","password":"1212312312"}};{"action":"login","request":{"username":"vinicius","password":"asdasd"}};{"action":"login","request":{"username":"vinicius","password":"asdasdasd"}};{"action":"create_room","request":{"name":"is a fire on my soul"}};{"action":"create_room","request":{"name":"unique"}};
