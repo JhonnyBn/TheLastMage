@@ -4,11 +4,9 @@ import gameFactory from "./factory/gameFactory"
 import loginController from "./controller/LoginController"
 import * as logUtil from "./util/logUtil"
 import { createRoom, listRooms } from './controller/RoomController';
-import { serverProperties } from "./model/datasource"
+import { serverProperties, datasource } from "./model/datasource"
 import fs from "fs"
-import { hashOf } from './util/hashUtil';
-
-const currentGame = gameFactory()
+import { hashOf, verifyConsistentHash } from './util/hashUtil';
 
 function loadProto() {
     const PROTO_PATH = __dirname + '../../../../protos/game.proto';
@@ -74,17 +72,41 @@ function main() {
 
 // Receive message from client joining
 function join(call, callback) {
-    console.log("client connected");
-    currentGame.sender.connections.push(call);
-    call.write({ user: "Server", text: "new user joined ..." })
+    const { room, username } = call.request
+    console.log(call.request)
+    const serverTarget = verifyConsistentHash(room)
+    console.log(serverTarget)
+    if (serverTarget.port != null) {
+        const socket = serverTarget.client.join({username:username,room:room})
+        socket.on("data", message => {call.write(message)})
+       
+    } else {
+        if (datasource.games == undefined) datasource.games = []
+        const currentGame = datasource.games.find(game => game.name == room)
+        if (currentGame == undefined) {
+            datasource.games.push({
+                name: room,
+                clients: [call],
+                game: gameFactory(room)
+            })
+        } else {
+            currentGame.games.clients.push(call)
+        }
+        console.log("client connected");
+        call.write({ user: "Server", text: "new user joined ..." })
+
+    }
+    console.log(datasource.games)
 }
 
 // Receive message from client
 function send(call, callback) {
-    datasourceUtil.saveMsg(call.request.text)
-    currentGame.sender.currentClient = call.request.user;
-    console.log(call.request)
-    currentGame.processInput(call.request.text);
+    const {username,room,text} = call.request
+    console.log(username, room, text)
+    const currentGame = datasource.games.find(game => game.name == room)
+    currentGame.game.sender.currentClient= username
+    currentGame.game.processInput(text)
+    console.log(currentGame)
 
 }
 loadServerProperties()

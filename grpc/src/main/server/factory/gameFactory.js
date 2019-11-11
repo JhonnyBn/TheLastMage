@@ -11,8 +11,8 @@ import Chat from "../actions/game/chat";
 import Reboot from "../actions/game/reboot";
 import ListPlayers from "../actions/game/listplayers";
 
-export default function () {
-    const sender = new Sender(new Array());
+export default function (roomName) {
+    const sender = new Sender(roomName);
 
     const join = new Join();
     const help = new Help(join);

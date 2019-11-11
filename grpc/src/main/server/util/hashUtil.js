@@ -5,6 +5,7 @@ export function hashOf(value) {
 }
 
 export function verifyConsistentHash(value) {
+    console.log(value)
     console.log("------------------------------------------------------------------------")
     console.log(serverProperties.routes)
     const hashValue = hashOf(value)

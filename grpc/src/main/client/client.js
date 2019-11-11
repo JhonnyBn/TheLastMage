@@ -43,8 +43,24 @@ function createRoom() {
 function listRooms() {
     client.listRooms({}, (err, response) => {
         if (err) { console.log(err); throw err }
-        console.log(response)
-        showMainMenu()
+        console.log("0: voltar.")
+        response.rooms.forEach((room, index) => {
+
+            console.log(`${index + 1}: ${room.name}`)
+        });
+        readline.question("Sua escolha:", answer => {
+            if (answer >= 1 && answer <= response.rooms.length) {
+                joinRoom(response.rooms[answer - 1].name)
+            } else {
+
+                switch (answer) {
+                    case '0': showMainMenu(); break;
+                    default: listRooms()
+                }
+            }
+        })
+
+
     })
 }
 
@@ -66,14 +82,17 @@ function showMainMenu() {
     })
 }
 
-//let channel = client.join({ user: username }, { user: username })
-//channel.on("data", onData)
-//channel.on('end', () => { console.log('end'); });
+function joinRoom(name) {
 
-//rl.on("line", function (text) {
-//    let command = text.split(" ")
-//    client.send({ user: username, text: `${command[0]} ${username} ${command[1]}` }, res => { })
-//})
+    let channel = client.join({ username: username, room: name })
+    channel.on("data", onData)
+    channel.on('end', () => { console.log('end'); });
+
+    readline.on("line", function (text) {
+       let command = text.split(" ")
+       client.send({ room:name,username: username, text: `${command[0]} ${username} ${command[1]}` }, res => { })
+    })
+}
 
 //When server send a message
 function onData(message) {
@@ -103,5 +122,5 @@ function login() {
 
 
 }
-//login()
-listRooms()
+login()
+// listRooms()
