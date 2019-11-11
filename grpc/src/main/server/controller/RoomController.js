@@ -69,6 +69,6 @@ export function listRooms(call, callback) {
 function uniq(a) {
     var seen = {};
     return a.filter(function (item) {
-        return seen.hasOwnProperty(item) ? false : (seen[item] = true);
+        return seen.hasOwnProperty(item.id) ? false : (seen[item.id] = true);
     });
 }
