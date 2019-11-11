@@ -1,9 +1,9 @@
 import * as protoLoader from '@grpc/proto-loader'
 import * as grpc from 'grpc'
-import * as readline from 'readline'
+import * as readlineLib from 'readline'
 
 //Read terminal Lines
-var rl = readline.createInterface({
+var readline = readlineLib.createInterface({
     input: process.stdin,
     output: process.stdout
 })
@@ -29,37 +29,79 @@ let client = new proto.game.Actions(
     grpc.credentials.createInsecure()
 )
 
-//Start the stream between server and client
-function startChat(password) {
-    client.login({ username: username, password: password }, (err, response) => {
-        if (err) throw err
-        console.log("msg enviada", response)
-        main()
-    })
+function createRoom() {
+    readline.question("Digite o nome da sala:", answer => {
+        client.createRoom({ name: answer }, (err, response) => {
+            if (err) throw err
+            console.log(response)
+            showMainMenu()
+        })
+    });
 
-    //let channel = client.join({ user: username }, { user: username })
-    //channel.on("data", onData)
-
-    //rl.on("line", function (text) {
-    //    let command = text.split(" ")
-    //    client.send({ user: username, text: `${command[0]} ${username} ${command[1]}` }, res => { })
-    //})
 }
+
+function listRooms() {
+    client.listRooms({}, (err, response) => {
+        if (err) { console.log(err); throw err }
+        console.log(response)
+        showMainMenu()
+    })
+}
+
+function showMainMenu() {
+    console.log(`
+        Main menu:\n\n
+        1: Criar sala
+        2: Listar salas
+        0: Sair
+    
+    `)
+    readline.question("Sua escolha:", answer => {
+        switch (answer) {
+            case '1': createRoom(); break;
+            case '2': listRooms(); break;
+            case '0': login(); break;
+            default: showMainMenu()
+        }
+    })
+}
+
+//let channel = client.join({ user: username }, { user: username })
+//channel.on("data", onData)
+//channel.on('end', () => { console.log('end'); });
+
+//rl.on("line", function (text) {
+//    let command = text.split(" ")
+//    client.send({ user: username, text: `${command[0]} ${username} ${command[1]}` }, res => { })
+//})
 
 //When server send a message
 function onData(message) {
     console.log(`${message.text}`)
 }
 
-function main() {
+function login() {
 
     //Ask user name then start the chat
-    rl.question("What's ur name? ", answer => {
+    readline.question("What's ur name? ", answer => {
         username = answer;
-        rl.question("What's ur password? ", answer2 => {
-            startChat(answer2);
+        readline.question("What's ur password? ", password => {
+            client.login({ username: username, password: password }, (err, response) => {
+                if (err) { throw err }
+                if (response.success == 'true') {
+                    console.log("Bem Vindo", response.username)
+                    showMainMenu()
+
+                } else {
+                    console.log("Senha incorreta.")
+                    login()
+                }
+
+            })
         })
     })
 
+
 }
-main()
+//login()
+listRooms()

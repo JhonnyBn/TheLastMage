@@ -11,10 +11,11 @@ service Actions { //Service class to be used by the clients
 }
 
 message ListRoomsRequest{
+    repeated string origin = 1;
 }
 message RoomResponse{
     string id = 1;
-    string string = 2;
+    string name = 2;
 }
 message ListRoomsResponse{
     repeated RoomResponse rooms = 1;

@@ -1,0 +1,1 @@
+{"action":"login","request":{"username":"v213123","password":"1"}};{"action":"create_room","request":{"name":"a"}};{"action":"create_room","request":{"name":"a"}};

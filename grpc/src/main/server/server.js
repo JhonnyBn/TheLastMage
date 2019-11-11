@@ -3,7 +3,7 @@ import * as grpc from 'grpc';
 import gameFactory from "./factory/gameFactory"
 import loginController from "./controller/LoginController"
 import * as logUtil from "./util/logUtil"
-import { createRoom } from './controller/RoomController';
+import { createRoom, listRooms } from './controller/RoomController';
 import { serverProperties } from "./model/datasource"
 import fs from "fs"
 import { hashOf } from './util/hashUtil';
@@ -61,7 +61,8 @@ function main() {
         join: join,
         send: send,
         login: loginController,
-        createRoom: createRoom
+        createRoom: createRoom,
+        listRooms: listRooms
     });
 
     server.bind(SERVER_ADDRESS, grpc.ServerCredentials.createInsecure());
