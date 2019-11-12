@@ -1,5 +1,5 @@
 import DefaultAction from "../actionDefaultClass"
-
+import { datasource } from "../../model/datasource";
 export default class Start extends DefaultAction {
 
     constructor(nextAction) {
@@ -9,7 +9,7 @@ export default class Start extends DefaultAction {
 
     processCommand(game) {
 
-        if (!game.running) {
+        if (!datasource.data.game[game.roomName].running) {
             game.run();
         } else {
             game.sender.sendMsgToCurrentClient("Game already started.")

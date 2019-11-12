@@ -2,6 +2,10 @@ import * as protoLoader from '@grpc/proto-loader'
 import * as grpc from 'grpc'
 import * as readlineLib from 'readline'
 
+let username = undefined
+let roomName = undefined
+
+
 //Read terminal Lines
 var readline = readlineLib.createInterface({
     input: process.stdin,
@@ -20,8 +24,6 @@ var proto = grpc.loadPackageDefinition(
 )
 
 const REMOTE_SERVER = "0.0.0.0:8080"
-
-let username
 
 //Create gRPC client
 let client = new proto.game.Actions(
@@ -84,13 +86,14 @@ function showMainMenu() {
 
 function joinRoom(name) {
 
+    roomName = name
     let channel = client.join({ username: username, room: name })
     channel.on("data", onData)
     channel.on('end', () => { console.log('end'); });
 
     readline.on("line", function (text) {
-       let command = text.split(" ")
-       client.send({ room:name,username: username, text: `${command[0]} ${username} ${command[1]}` }, res => { })
+        let command = text.split(" ")
+        client.send({ room: name, username: username, text: `${command[0]} ${username} ${command[1]}` }, res => { })
     })
 }
 
@@ -122,5 +125,7 @@ function login() {
 
 
 }
+
 login()
+
 // listRooms()

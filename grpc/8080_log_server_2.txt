@@ -1,1 +1,0 @@
-{"action":"create_room","request":{"name":"6"}};{"action":"create_room","request":{"name":"sla"}};

@@ -1,1 +1,0 @@
-{"action":"login","request":{"username":"vinicius","password":"clemente"}};{"action":"login","request":{"username":"vinicius","password":"clemente"}};{"action":"login","request":{"username":"vinicius","password":"asdasdasd"}};

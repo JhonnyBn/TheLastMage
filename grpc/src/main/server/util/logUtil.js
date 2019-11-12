@@ -9,13 +9,20 @@ export function save(log) {
     datasource.logSize += 1
     console.log(datasource.logSize)
     if (datasource.logSize % serverProperties.logSizeCacheSize == 0) {
+        const data = JSON.parse(JSON.stringify(datasource))
+        data.games = null
         const logSize = datasource.logSize / serverProperties.logSizeCacheSize
         logAtualName = `${serverProperties.logServerPrefix}_${logSize + 1}.txt`
+        try {
+            console.log("remove:", `${serverProperties.logServerPrefix}_datasource${logSize - 3}.json`)
+            fs.unlink(`${serverProperties.logServerPrefix}_datasource${logSize - 3}.json`)
+        } catch (e) { console.log(e) }
         fs.appendFile(
             `${serverProperties.logServerPrefix}_datasource${logSize}.json`,
-            JSON.stringify(datasource),
+            JSON.stringify(data),
             (err) => { if (err) throw err; else console.log('Saved!') }
         )
+
     }
     console.log(logAtualName)
     fs.appendFile(logAtualName, JSON.stringify(log) + ";", function (err) {
@@ -30,7 +37,10 @@ export function load() {
     const serverFiles = files.filter(file => file.indexOf(serverProperties.logServerPrefix) > -1)
     const serverLogsFiles = serverFiles.filter(file => file.indexOf("datasource") <= -1)
     const serverDatabasesFiles = serverFiles.filter(file => file.indexOf("datasource") > -1)
-    const sortedDatabasesFiles = serverDatabasesFiles.sort(file => getIndeOfDatasourceFileName(file))
+    const sortedDatabasesFiles = serverDatabasesFiles.sort((a, b) => {
+        return getIndeOfDatasourceFileName(b) - getIndeOfDatasourceFileName(a)
+    }
+    )
     logAtualName = serverProperties.logServerPrefix + "_1.txt"
     if (sortedDatabasesFiles.length > 0) {
         const lastDatabase = sortedDatabasesFiles[0]
@@ -38,7 +48,6 @@ export function load() {
         const content = fs.readFileSync(lastDatabase, "utf8")
         const jsonData = JSON.parse(content)
         datasource.data = jsonData.data
-
         datasource.logSize = jsonData.logSize - 1
         console.log(datasource)
         executeLogFile(serverLogsFiles
@@ -54,7 +63,7 @@ export function load() {
 
 }
 function executeLogFile(files) {
-    files.sort(file => getIndeOfLogFileName(file) * -1)
+    files.sort((a, b) => getIndeOfLogFileName(b) - getIndeOfLogFileName(a))
         .forEach(file => {
             const content = fs.readFileSync(file, "utf8")
             const logsInString = content.split(";")
@@ -92,5 +101,6 @@ function callServices(logsInString) {
 
 export const action = {
     login: "login",
-    createRoom: "create_room"
+    createRoom: "create_room",
+    send: "send"
 }

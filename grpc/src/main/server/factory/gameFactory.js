@@ -25,5 +25,5 @@ export default function (roomName) {
     const listplayers = new ListPlayers(chat);
     const reboot = new Reboot(listplayers);
 
-    return new Game(sender, reboot);
+    return new Game(sender, reboot, roomName);
 }

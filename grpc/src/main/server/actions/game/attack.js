@@ -1,4 +1,5 @@
 import DefaultAction from "../actionDefaultClass"
+import { datasource } from "../../model/datasource";
 
 export default class Attack extends DefaultAction {
 
@@ -9,7 +10,7 @@ export default class Attack extends DefaultAction {
 
     processCommand(game, input) {
 
-        if (game.running == 0) {
+        if (datasource.data.game[game.roomName].running == 0) {
             game.sender.sendMsgToCurrentClient("Game is not running.")
             return;
         }

@@ -1,1 +1,1 @@
-{"action":"create_room","request":{"name":"matheus e top"}};{"action":"login","request":{"username":"vinicius","password":"clemente"}};{"action":"login","request":{"username":"vinicius","password":"sousa"}};
+{"action":"login","request":{"username":"clemente","password":"vinicius"}};{"action":"login","request":{"username":"vinicius","password":"clemente"}};{"action":"login","request":{"username":"vinicius","password":"clemente"}};

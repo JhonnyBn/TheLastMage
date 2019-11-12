@@ -1,7 +1,9 @@
+import { datasource } from "./datasource";
+
 export default class mage {
-    constructor(name, sender) {
+    constructor(name, roomName) {
         this.name = name;
-        this.sender = sender;
+        this.roomName = roomName;
         this.life = 100;
         this.alive = 1;
         this.attackDamage = 25;
@@ -20,11 +22,14 @@ export default class mage {
     }
 
     checkLife() {
+        const currentGame = datasource.games.find(game => game.name == this.roomName)
+        console.log(currentGame)
+        const sender = currentGame.game.sender
         if (this.life <= 0) {
-            this.sender.sendMsgToAll(this.name + " just died.\n");
+            sender.sendMsgToAll(this.name + " just died.\n");
             this.alive = 0;
         } else {
-            this.sender.sendMsgToAll(
+            sender.sendMsgToAll(
                 this.name + " has now " + this.life + " life.\n"
             );
         }

@@ -7,6 +7,8 @@ import { createRoom, listRooms } from './controller/RoomController';
 import { serverProperties, datasource } from "./model/datasource"
 import fs from "fs"
 import { hashOf, verifyConsistentHash } from './util/hashUtil';
+import * as gameService from "./service/GameService";
+import { Log } from './model/log';
 
 function loadProto() {
     const PROTO_PATH = __dirname + '../../../../protos/game.proto';
@@ -106,13 +108,11 @@ function send(call, callback) {
     const serverTarget = verifyConsistentHash(room)
     console.log(serverTarget)
     if (serverTarget.port != null) {
-        serverTarget.client.send({ username: username, room: room, text: text },()=>{})
+        serverTarget.client.send({ username: username, room: room, text: text }, () => { })
     } else {
         console.log(username, room, text)
-        const currentGame = datasource.games.find(game => game.name == room)
-        currentGame.game.sender.currentClient = username
-        currentGame.game.processInput(text)
-        console.log(currentGame)
+        logUtil.save(new Log(logUtil.action.send, call.request))
+        gameService.send(username, room, text)
     }
 
 }

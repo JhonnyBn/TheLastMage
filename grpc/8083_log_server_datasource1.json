@@ -1,0 +1,1 @@
+{"data":{"rooms":[{"id":"35d7b8fb41a11ecd2d70ef0bc2775245","name":"ufu"}],"game":{"ufu":{"players":[{"name":"vinicius","roomName":"ufu","life":100,"alive":1,"attackDamage":25,"specialDamage":50,"defending":0,"specialAttacksLeft":3}],"turn":0,"currentPlayer":null,"running":0}}},"logSize":3,"games":null}

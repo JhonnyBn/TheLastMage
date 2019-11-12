@@ -1,5 +1,5 @@
 import DefaultAction from "../actionDefaultClass"
-
+import { datasource } from "../../model/datasource";
 export default class SpecialAttack extends DefaultAction {
 
     constructor(nextAction) {
@@ -9,7 +9,7 @@ export default class SpecialAttack extends DefaultAction {
 
     processCommand(game, input) {
 
-        if (game.running == 0) {
+        if (datasource.data.game[game.roomName].running == 0) {
             game.sender.sendMsgToCurrentClient("Game is not running.")
             return;
         }
@@ -37,7 +37,7 @@ export default class SpecialAttack extends DefaultAction {
 
         if (game.isTheTurnOfThePlayer(playerName)) {
 
-            if (game.currentPlayer.specialAttacksLeft < 1) {
+            if (datasource.data.game[game.roomName].currentPlayer.specialAttacksLeft < 1) {
                 game.sender.sendMsgToCurrentClient("You can't use more special attacks this game.")
                 return;
             }

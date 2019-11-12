@@ -1,1 +1,1 @@
-{"action":"create_room","request":{"name":"9"}};{"action":"create_room","request":{"name":"ola"}};
+{"action":"create_room","request":{"name":"ufu"}};{"action":"send","request":{"username":"vinicius","room":"ufu","text":"join vinicius undefined"}};

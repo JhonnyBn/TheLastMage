@@ -1,5 +1,5 @@
 import DefaultAction from "../actionDefaultClass"
-
+import { datasource } from "../../model/datasource";
 export default class Reset extends DefaultAction {
 
     constructor(nextAction) {
@@ -9,7 +9,7 @@ export default class Reset extends DefaultAction {
 
     processCommand(game) {
 
-        if (game.running) {
+        if (datasource.data.game[game.roomName].running) {
             game.resetGame();
         } else {
             game.sender.sendMsgToCurrentClient("Game is not running.")
