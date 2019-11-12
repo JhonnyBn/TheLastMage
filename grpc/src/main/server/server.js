@@ -77,9 +77,9 @@ function join(call, callback) {
     const serverTarget = verifyConsistentHash(room)
     console.log(serverTarget)
     if (serverTarget.port != null) {
-        const socket = serverTarget.client.join({username:username,room:room})
-        socket.on("data", message => {call.write(message)})
-       
+        const socket = serverTarget.client.join({ username: username, room: room })
+        socket.on("data", message => { call.write(message) })
+
     } else {
         if (datasource.games == undefined) datasource.games = []
         const currentGame = datasource.games.find(game => game.name == room)
@@ -90,7 +90,7 @@ function join(call, callback) {
                 game: gameFactory(room)
             })
         } else {
-            currentGame.games.clients.push(call)
+            currentGame.clients.push(call)
         }
         console.log("client connected");
         call.write({ user: "Server", text: "new user joined ..." })
@@ -101,12 +101,19 @@ function join(call, callback) {
 
 // Receive message from client
 function send(call, callback) {
-    const {username,room,text} = call.request
-    console.log(username, room, text)
-    const currentGame = datasource.games.find(game => game.name == room)
-    currentGame.game.sender.currentClient= username
-    currentGame.game.processInput(text)
-    console.log(currentGame)
+
+    const { username, room, text } = call.request
+    const serverTarget = verifyConsistentHash(room)
+    console.log(serverTarget)
+    if (serverTarget.port != null) {
+        serverTarget.client.send({ username: username, room: room, text: text },()=>{})
+    } else {
+        console.log(username, room, text)
+        const currentGame = datasource.games.find(game => game.name == room)
+        currentGame.game.sender.currentClient = username
+        currentGame.game.processInput(text)
+        console.log(currentGame)
+    }
 
 }
 loadServerProperties()

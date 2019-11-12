@@ -7,19 +7,18 @@ export default class Sender {
     }
 
     sendMsgToAll(msg) {
-        this.connections.forEach(connection => {
-            connection.write({ user: this.currentClient, text: msg });
-            console.log(msg);
-        });
+        const currentGame = datasource.games.find(game => game.name == this.roomName)
+        console.log(currentGame.clients);
+        currentGame.clients.forEach(client => client.write({ user: this.currentClient, text: msg }));
     }
 
     sendMsgToAllButIgnoreCurrentClient(msg) {
-        // this.connections
-        //     .filter(client => client.request.user != this.currentClient)
-        //     .forEach(connection => {
-        //         connection.write({ user: this.currentClient, text: msg });
-        //     });
-        // console.log(msg);
+        console.log(datasource.games)
+        console.log(this.roomName)
+        const currentGame = datasource.games.find(game => game.name == this.roomName)
+        console.log(currentGame.clients);
+        const currentClients = currentGame.clients.filter(client => client.request.username != this.currentClient)
+        currentClients.forEach(client => client.write({ user: this.currentClient, text: msg }));
     }
 
     sendMsgToCurrentClient(msg) {
