@@ -13,6 +13,25 @@ export default class Game {
                 running: 0
             }
         }
+        if (
+            datasource.data.game[this.roomName] != undefined
+            && datasource.data.game[this.roomName].players != undefined
+            && datasource.data.game[this.roomName].players.length > 0
+        ) {
+            const players = JSON.parse(JSON.stringify(datasource.data.game[this.roomName].players))
+            datasource.data.game[this.roomName].players = []
+            players.forEach(player => {
+                const mage = new Mage(player.name, player.roomName)
+                mage.life = player.life
+                mage.alive = player.alive
+                mage.attackDamage = player.attackDamage
+                mage.specialDamage = player.specialDamage
+                mage.defending = player.defending
+                mage.specialAttacksLeft = player.specialAttacksLeft
+                datasource.data.game[this.roomName].players.push(mage)
+            });
+        }
+        console.log(datasource.data.game[this.roomName].players)
 
         this.sender = sender;
         this.action = action

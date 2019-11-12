@@ -41,7 +41,11 @@ function loadServerProperties() {
             //Create gRPC client
             const client = new proto.game.Actions(
                 REMOTE_SERVER,
-                grpc.credentials.createInsecure()
+                grpc.credentials.createInsecure(),
+                {
+                    'grpc.min_reconnect_backoff_ms': 1000,
+                    'grpc.max_reconnect_backoff_ms': 10000,
+                }
             )
             element.client = client
         }

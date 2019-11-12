@@ -1,11 +1,14 @@
 import { datasource } from "../model/datasource"
+import gameFactory from "../factory/gameFactory"
 
 export function send(username, room, text) {
     console.log(username, room, text)
+    console.log(datasource)
+    if (datasource.games == undefined) datasource.games = []
     if (datasource.games.find(game => game.name == room) == undefined) {
         datasource.games.push({
             name: room,
-            clients: [call],
+            clients: [],
             game: gameFactory(room)
         })
     }

@@ -1,0 +1,1 @@
+{"action":"send","request":{"username":"vinicius","room":"ufu","text":"attack vinicius clemente"}};{"action":"send","request":{"username":"vinicius","room":"ufu","text":"attack vinicius clemente"}};{"action":"send","request":{"username":"clemente","room":"ufu","text":"attack clemente vinicius"}};

@@ -2,6 +2,7 @@ import fs from "fs";
 import loginService from "../service/LoginService";
 import { createRoom } from '../service/RoomService'
 import { datasource, serverProperties } from "../model/datasource";
+import { send } from "../service/GameService";
 
 let logAtualName = ""
 export function save(log) {
@@ -59,8 +60,6 @@ export function load() {
         executeLogFile(serverLogsFiles)
     }
 
-    // loadFiles(serverFiles, serverLogsFiles)
-
 }
 function executeLogFile(files) {
     files.sort((a, b) => getIndeOfLogFileName(b) - getIndeOfLogFileName(a))
@@ -91,6 +90,9 @@ function callServices(logsInString) {
             }
             if (log.action == action.createRoom) {
                 createRoom(log.request.name)
+            }
+            if (log.action == action.send) {
+                send(log.request.username, log.request.room, log.request.text)
             }
             console.log(log)
         }

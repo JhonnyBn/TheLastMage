@@ -42,9 +42,10 @@ export function listRooms(call, callback) {
         }
         clients.forEach(route => {
             route.client.listRooms({ origin }, (err, response) => {
-                if (err) throw err
-                console.log("msg enviada", response)
-                responses.push(response)
+                let responseValue = response
+                if (err) responseValue = {rooms:[]}
+                console.log("msg enviada", responseValue)
+                responses.push(responseValue)
                 if (responses.length == clients.length) {
                     resolve(responses)
                 }

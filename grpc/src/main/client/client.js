@@ -28,7 +28,11 @@ const REMOTE_SERVER = "0.0.0.0:8080"
 //Create gRPC client
 let client = new proto.game.Actions(
     REMOTE_SERVER,
-    grpc.credentials.createInsecure()
+    grpc.credentials.createInsecure(),
+    {
+        'grpc.min_reconnect_backoff_ms': 1000,
+        'grpc.max_reconnect_backoff_ms': 10000,
+    }
 )
 
 function createRoom() {
@@ -90,6 +94,13 @@ function joinRoom(name) {
     let channel = client.join({ username: username, room: name })
     channel.on("data", onData)
     channel.on('end', () => { console.log('end'); });
+    channel.on('error', () => {
+        setTimeout(() => {
+            console.log("Trying to reconnect.")
+            joinRoom(name)
+        }, 5000)
+    }
+    );
 
     readline.on("line", function (text) {
         let command = text.split(" ")

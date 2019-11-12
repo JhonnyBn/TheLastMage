@@ -27,7 +27,10 @@ export default class Sender {
         const currentGame = datasource.games.find(game => game.name == this.roomName)
         console.log(currentGame.clients);
         const currentClient = currentGame.clients.find(client => client.request.username == this.currentClient)
+        if(currentClient != null)
+        {
         currentClient.write({ user: this.currentClient, text: msg });
+        }
     }
 
 }
