@@ -39,23 +39,34 @@ function main() {
     for (let index = inicialPort; index < (inicialPort + numberOfServer); index++) {
         servers.push({ hash: hashOf(index.toString()), port: index })
     }
-    servers.sort((a, b) => a.hash > b.hash ? -1 : a.hash < b.hash ? 1 : 0)
+    servers.sort((a, b) => a.hash < b.hash ? -1 : a.hash > b.hash ? 1 : 0)
     servers.forEach((server) => {
-        const route = []
+        const fingerprinting = []
         for (let j = 0; j < 128; j++) {
             let newHash = sumHashWithDecimal(server.hash, bigInt(2).pow(j))
-            let serverForHash = servers.find(s => newHash >= s.hash)
+            let serverForHash = servers.find(s => newHash <= s.hash)
             if (serverForHash == undefined) serverForHash = servers[0]
-            if (serverForHash.hash == server.hash) {
-                route.push({ hash: serverForHash.hash, index: newHash })
-            } else {
-                route.push({ hash: serverForHash.hash, port: serverForHash.port, index: newHash })
-
-            }
+            fingerprinting.push({ hash: serverForHash.hash, port: serverForHash.port, index: newHash })
         }
+        const beforeServer = servers.find((e, i) => {
+            let nextElement = undefined
+            if (i + 1 == servers.length) {
+                nextElement = servers[0]
+            } else {
+                nextElement = servers[i + 1]
+            }
+            return nextElement.hash == server.hash
+        })
         routes.push({
             server,
-            routes: route
+            routes: {
+                fingerprinting,
+                self: {
+                    base: { hash: server.hash },
+                    before: beforeServer
+                }
+
+            }
         })
     }
     )

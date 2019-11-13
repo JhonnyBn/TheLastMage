@@ -31,23 +31,21 @@ function loadServerProperties() {
     const fileRouteName = hashOf(serverProperties.port.toString()) + ".json"
     const routes = JSON.parse(fs.readFileSync(fileRouteName), "utf8")
     serverProperties.routes = routes
-    serverProperties.routes.forEach(element => {
+    serverProperties.routes.fingerprinting.forEach(element => {
+        var proto = loadProto()
 
-        if (element.port != null) {
-            var proto = loadProto()
+        const REMOTE_SERVER = `0.0.0.0:${element.port}`
+        //Create gRPC client
+        const client = new proto.game.Actions(
+            REMOTE_SERVER,
+            grpc.credentials.createInsecure(),
+            {
+                'grpc.min_reconnect_backoff_ms': 1000,
+                'grpc.max_reconnect_backoff_ms': 10000,
+            }
+        )
+        element.client = client
 
-            const REMOTE_SERVER = `0.0.0.0:${element.port}`
-            //Create gRPC client
-            const client = new proto.game.Actions(
-                REMOTE_SERVER,
-                grpc.credentials.createInsecure(),
-                {
-                    'grpc.min_reconnect_backoff_ms': 1000,
-                    'grpc.max_reconnect_backoff_ms': 10000,
-                }
-            )
-            element.client = client
-        }
     });
     if (isNaN(serverProperties.port)) throw ("Please set a port.")
 

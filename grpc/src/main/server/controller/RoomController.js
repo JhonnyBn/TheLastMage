@@ -28,14 +28,14 @@ export function listRooms(call, callback) {
 
     const { origin } = call.request == null ? [] : call.request
     console.log(origin)
-    const atualServer = serverProperties.routes.find(route => route.port == null)
+    const atualServer = serverProperties.routes.self.base
     origin.push(atualServer.hash)
 
     new Promise((resolve, reject) => {
         let responses = []
-        let clients = serverProperties.routes.filter(element => {
+        let clients = serverProperties.routes.fingerprinting.filter(element, i => {
             const clientsAlreadyCalled = origin.filter(hash => element.hash == hash)
-            return element.port != null && clientsAlreadyCalled.length == 0
+            return element.port != null && clientsAlreadyCalled.length == 0 && (i == 0 || element.hash != serverProperties.routes.fingerprinting[i - 1].hash)
         })
         if (clients.length == 0) {
             resolve(responses)
@@ -43,7 +43,7 @@ export function listRooms(call, callback) {
         clients.forEach(route => {
             route.client.listRooms({ origin }, (err, response) => {
                 let responseValue = response
-                if (err) responseValue = {rooms:[]}
+                if (err) responseValue = { rooms: [] }
                 console.log("msg enviada", responseValue)
                 responses.push(responseValue)
                 if (responses.length == clients.length) {

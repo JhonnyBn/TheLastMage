@@ -16,7 +16,7 @@ export function save(log) {
         logAtualName = `${serverProperties.logServerPrefix}_${logSize + 1}.txt`
         try {
             console.log("remove:", `${serverProperties.logServerPrefix}_datasource${logSize - 3}.json`)
-            fs.unlink(`${serverProperties.logServerPrefix}_datasource${logSize - 3}.json`)
+            fs.unlink(`${serverProperties.logServerPrefix}_datasource${logSize - 3}.json`,()=>{})
         } catch (e) { console.log(e) }
         fs.appendFile(
             `${serverProperties.logServerPrefix}_datasource${logSize}.json`,
