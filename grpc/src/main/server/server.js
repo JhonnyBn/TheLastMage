@@ -85,6 +85,7 @@ function join(call, callback) {
     if (serverTarget.port != null) {
         const socket = serverTarget.client.join({ username: username, room: room })
         socket.on("data", message => { call.write(message) })
+        socket.on('error', () => {})
 
     } else {
         if (datasource.games == undefined) datasource.games = []
