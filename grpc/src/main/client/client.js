@@ -94,17 +94,19 @@ function joinRoom(name) {
     let channel = client.join({ username: username, room: name })
     channel.on("data", onData)
     channel.on('end', () => { console.log('end'); });
-    channel.on('error', () => {
-        setTimeout(() => {
-            console.log("Trying to reconnect.")
-            joinRoom(name)
-        }, 5000)
-    }
-    );
+    channel.on('error', () => { });
 
     readline.on("line", function (text) {
         let command = text.split(" ")
-        client.send({ room: name, username: username, text: `${command[0]} ${username} ${command[1]}` }, res => { })
+        if (command[0] == "reconnect") {
+            channel.cancel()
+            channel = client.join({ username: username, room: name })
+            channel.on("data", onData)
+            channel.on('end', () => { console.log('end'); });
+            channel.on('error', () => { })
+        } else {
+            client.send({ room: name, username: username, text: `${command[0]} ${username} ${command[1]}` }, res => { })
+        }
     })
 }
 

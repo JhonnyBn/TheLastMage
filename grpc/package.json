@@ -4,14 +4,15 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "@babel/runtime": "^7.6.2",
     "@grpc/proto-loader": "^0.1.0",
     "async": "^1.5.2",
+    "babel-node": "0.0.1-security",
+    "big-integer": "^1.6.48",
     "google-protobuf": "^3.0.0",
     "grpc": "^1.11.0",
     "lodash": "^4.6.1",
-    "minimist": "^1.2.0",
-    "@babel/runtime": "^7.6.2",
-    "babel-node": "0.0.1-security"
+    "minimist": "^1.2.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.2",

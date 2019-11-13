@@ -5,12 +5,12 @@ export function hashOf(value) {
 }
 
 export function verifyConsistentHash(value) {
-    console.log(value)
     console.log("------------------------------------------------------------------------")
-    console.log(serverProperties.routes)
     const hashValue = hashOf(value)
-    console.log(hashValue)
-    console.log(hashValue, serverProperties.routes[0].hash)
+    let server = serverProperties.routes.find(s => hashValue >= s.hash)
+    if (server == undefined) server = serverProperties.routes[0]
+    console.log(hashValue, server)
+    return server
     if (hashValue >= serverProperties.routes[0].hash) {
         console.log(hashValue, serverProperties.routes[0].hash)
         return serverProperties.routes[0]

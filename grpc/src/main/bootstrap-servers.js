@@ -1,10 +1,32 @@
 import crypto from "crypto"
 import fs from "fs"
+import bigInt from "big-integer"
+
+function sumHashWithDecimal(hash, sum) {
+    let decimalMax = bigInt('ffffffffffffffffffffffffffffffff', 16)
+    let decimal = bigInt(hash, 16)
+    let newDecimal = decimal.plus(sum)
+    if (newDecimal.compare(decimalMax) == 1) {
+        newDecimal = newDecimal.minus(decimalMax)
+        console.log(newDecimal.toString(16))
+        console.log(addZeroIfNeed(newDecimal.toString(16)))
+    }
+    return addZeroIfNeed(newDecimal.toString(16))
+
+}
+
+function addZeroIfNeed(hash) {
+    if (hash.length < 32) {
+        return addZeroIfNeed("0" + hash)
+    } else {
+        return hash
+    }
+}
+
 
 const numberOfServer = parseInt(process.argv[2])
 const inicialPort = parseInt(process.argv[3])
 const servers = []
-const serversSorted = []
 const routes = []
 
 console.log("numberOfServer:" + numberOfServer)
@@ -17,27 +39,26 @@ function main() {
     for (let index = inicialPort; index < (inicialPort + numberOfServer); index++) {
         servers.push({ hash: hashOf(index.toString()), port: index })
     }
-    servers.sort((a, b) => a.hash < b.hash ? -1 : a.hash > b.hash ? 1 : 0)
-    serversSorted.push(servers[servers.length - 1])
-    servers.forEach(server => server != servers[servers.length - 1] ? serversSorted.push(server) : null)
-    serversSorted.forEach((server, index) => {
+    servers.sort((a, b) => a.hash > b.hash ? -1 : a.hash < b.hash ? 1 : 0)
+    servers.forEach((server) => {
         const route = []
-        for (let j = 0; parseInt(j) < parseInt(Math.sqrt(serversSorted.length + 1)); j++) {
-            route.push(serversSorted[(Math.pow(2, j) + index) % serversSorted.length])
-        }
-        route.push({ hash: server.hash })
-        route.sort((a, b) => a.hash < b.hash ? -1 : a.hash > b.hash ? 1 : 0)
+        for (let j = 0; j < 128; j++) {
+            let newHash = sumHashWithDecimal(server.hash, bigInt(2).pow(j))
+            let serverForHash = servers.find(s => newHash >= s.hash)
+            if (serverForHash == undefined) serverForHash = servers[0]
+            if (serverForHash.hash == server.hash) {
+                route.push({ hash: serverForHash.hash, index: newHash })
+            } else {
+                route.push({ hash: serverForHash.hash, port: serverForHash.port, index: newHash })
 
-        const routeWithServer = []
-        routeWithServer.push(route[route.length - 1])
-        route.forEach(r => r.hash != route[route.length - 1].hash ? routeWithServer.push(r) : null)
+            }
+        }
         routes.push({
             server,
-            routes: routeWithServer
+            routes: route
         })
     }
     )
-    console.log(routes)
     routes.forEach(route => {
         fs.writeFile(route.server.hash + ".json", JSON.stringify(route.routes), function (err) {
             if (err) throw err
