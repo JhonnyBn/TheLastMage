@@ -1,0 +1,1 @@
+{"action":"send","request":{"username":"vinicius","room":"ola","text":"start vinicius undefined"}};

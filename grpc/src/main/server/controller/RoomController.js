@@ -33,7 +33,7 @@ export function listRooms(call, callback) {
 
     new Promise((resolve, reject) => {
         let responses = []
-        let clients = serverProperties.routes.fingerprinting.filter(element, i => {
+        let clients = serverProperties.routes.fingerprinting.filter((element, i) => {
             const clientsAlreadyCalled = origin.filter(hash => element.hash == hash)
             return element.port != null && clientsAlreadyCalled.length == 0 && (i == 0 || element.hash != serverProperties.routes.fingerprinting[i - 1].hash)
         })
