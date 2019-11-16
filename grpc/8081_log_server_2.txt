@@ -1,1 +1,1 @@
-{"action":"login","request":{"username":"matheus","password":"1"}};{"action":"login","request":{"username":"matheus","password":"clmente"}};{"action":"create_room","request":{"name":"ufu"}};
+{"action":"send","request":{"username":"joao","room":"ufu","text":"help joao undefined"}};{"action":"send","request":{"username":"joao","room":"ufu","text":"listplayers joao undefined"}};{"action":"send","request":{"username":"joao","room":"ufu","text":"join joao undefined"}};

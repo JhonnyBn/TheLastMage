@@ -1,0 +1,1 @@
+{"action":"send","request":{"username":"joao","room":"ufu","text":"help joao undefined"}};{"action":"send","request":{"username":"joao","room":"ufu","text":"specialattack joao vinicius"}};{"action":"send","request":{"username":"vinicius","room":"ufu","text":"specialattack vinicius joao"}};

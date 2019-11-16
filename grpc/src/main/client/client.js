@@ -23,7 +23,7 @@ var proto = grpc.loadPackageDefinition(
     })
 )
 
-const REMOTE_SERVER = "0.0.0.0:8080"
+const REMOTE_SERVER = "0.0.0.0:9092"
 
 //Create gRPC client
 let client = new proto.game.Actions(
