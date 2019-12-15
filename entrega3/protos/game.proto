@@ -5,7 +5,18 @@ package game; //Optional: unique package name.
 service Actions { //Service class to be used by the clients
     rpc joinServer(JoinServerRequest) returns (JoinServerResponse){}
     rpc syncServer(SyncServerRequest) returns (SyncServerResponse){}
+    rpc getServerUrlByKey (GetServerUrlByKeyRequest) returns (GetServerUrlByKeyResponse);
     rpc showFingerTable (ShowFingerTableRequest) returns (ShowFingerTableResponse);
+}
+
+message GetServerUrlByKeyRequest{
+    string key = 1;
+    repeated string origins = 2;
+}
+message GetServerUrlByKeyResponse{
+    string url = 1;
+    string index = 2;
+    string key = 3;
 }
 
 message SyncServerRequest{
