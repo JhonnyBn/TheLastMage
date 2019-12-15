@@ -1,0 +1,38 @@
+syntax = "proto3"; //Specify proto3 version.
+ 
+package game; //Optional: unique package name.
+ 
+service Actions { //Service class to be used by the clients
+    rpc joinServer(JoinServerRequest) returns (JoinServerResponse){}
+    rpc syncServer(SyncServerRequest) returns (SyncServerResponse){}
+    rpc showFingerTable (ShowFingerTableRequest) returns (ShowFingerTableResponse);
+}
+
+message SyncServerRequest{
+    string newIndex = 1;
+    string newIndexUrl = 2;
+    string oldIndex = 3;
+}
+
+message SyncServerResponse{
+    string status = 1;
+}
+
+message ShowFingerTableRequest{}
+message ShowFingerTableResponse{
+    repeated FingerTable fingerTable= 1;
+}
+message FingerTable{
+    string index = 1;
+    string key = 2;
+    string url = 3;
+}
+
+message JoinServerRequest{
+    string index = 1;
+    string url = 2;
+}
+message JoinServerResponse{
+    string key = 1;
+    string message = 2;
+}
