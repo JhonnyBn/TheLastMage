@@ -11,7 +11,6 @@ serverProperties.maxIndexExponent = 3
 serverProperties.maxIndex = bigInt(2).pow(serverProperties.maxIndexExponent)
 datasource.data.currentIndex = generateIndexByPort(serverProperties.port, serverProperties.maxIndex)
 //datasource.data.currentIndex = "4"
-datasource.data.backIndex = null
 
 console.log("Server Index:", datasource.data.currentIndex)
 
@@ -22,7 +21,7 @@ function genereateFingerTable() {
         }
         const key = addNumberToIndex(bigInt(2).pow(i))
         datasource.data.fingerTable[key] = {
-            index: datasource.data.currentIndex, key, order: i, url: "localhost:" + serverProperties.port
+            index: datasource.data.currentIndex, key, order: i, url: getCurrentUrl()
         }
     }
     console.log(datasource.data.fingerTable)
@@ -68,17 +67,18 @@ function joinServer(call, callback) {
     if (!isValidIndex(index)) {
         callback(null, { key: "400", message: "Wrong Index" })
     } else {
-        if (datasource.data.fingerTable == undefined) {
-            genereateFingerTable()
-            datasource.data.backIndex = index
-            addServerToFingerTable(datasource.data.currentIndex, index, url)
-            callback(null, { key: "201", message: "Created" })
-            return
-        }
+        //if (datasource.data.fingerTable == undefined) {
+        //    genereateFingerTable()
+        //    addServerToFingerTable(datasource.data.currentIndex, index, url)
+        //    callback(null, { key: "201", message: "Created" })
+        //    return
+        //}
         const firstIndex = getValidFirstIndex(index)
         if (firstIndex != -1) {
             addServerToFingerTable(firstIndex, index, url)
-            datasource.data.backIndex = index
+            const newFirstIndex = datasource.data.fingerTable[addNumberToIndex(1)]
+            const client = buildClient(newFirstIndex.url)
+            client.syncServer({ newIndex: index, newIndexUrl: url, oldIndex: firstIndex }, (err, resp) => console.log(resp))
             callback(null, { key: "201", message: "Created" })
             return
         }
@@ -86,6 +86,15 @@ function joinServer(call, callback) {
         callback(null, { key: "200", message: "OK" })
     }
 
+}
+
+function syncServer(call, callback) {
+    console.log("--------------------sync-----------------------")
+    console.log(datasource.data.fingerTable)
+    const { newIndex, newIndexUrl, oldIndex } = call.request
+    console.log(call.request)
+    addServerToFingerTable(oldIndex, newIndex, newIndexUrl)
+    callback(null, { status: "200" })
 }
 
 function compareIndex(oldIndex, index) {
@@ -104,8 +113,15 @@ function compareIndex(oldIndex, index) {
             return bigInt(newOldIndex).compare(newIndex) <= 0
         }
     } else {
-        console.log("sameIndex", oldIndex, index)
-        return bigInt(oldIndex).compare(bigInt(index)) <= 0
+        if (index < datasource.data.currentIndex) {
+            let newIndex = bigInt(index).add(serverProperties.maxIndex)
+            console.log("sameIndex1", oldIndex, newIndex)
+            return bigInt(oldIndex).compare(bigInt(newIndex)) <= 0
+        } else {
+            console.log("sameIndex2", oldIndex, index)
+            return bigInt(oldIndex).compare(bigInt(index)) <= 0
+        }
+
     }
 }
 
@@ -127,7 +143,7 @@ function isValidFingerTable(key, fingerTable) {
 function addServerToFingerTable(nextIndex, index, url) {
     Object.keys(datasource.data.fingerTable).forEach(key => {
         const table = datasource.data.fingerTable[key]
-        if (table.index == nextIndex && isValidFingerTable(index, table)) {
+        if (table.index == nextIndex && isValidFingerTable(index, table) && compareIndex(index, table.index)) {
             table.index = index
             table.url = url
         }
@@ -148,11 +164,16 @@ function showFingerTable(call, callback) {
     if (datasource.data.fingerTable != undefined) {
         fingerTable = datasource.data.fingerTable
     }
-    const result = {
-        fingerTable: Object.keys(fingerTable).map(key => {
-            const table = fingerTable[key]
+    let newFingerTable = Object.keys(fingerTable)
+        .map(key => fingerTable[key])
+        .sort((a, b) => a.order - b.order)
+        .map(table => {
+            console.log(table)
             return { index: table.index, key: table.key, url: table.url }
         })
+    const result = {
+        fingerTable: newFingerTable,
+        currentIndex: datasource.data.currentIndex
     }
     console.log(result)
     callback(null, result)
@@ -168,7 +189,8 @@ function main() {
     server.addService(proto.game.Actions.service, {
         joinServer: joinServer,
         showFingerTable: showFingerTable,
-        getServerUrlByKey: getServerUrlByKey
+        getServerUrlByKey: getServerUrlByKey,
+        syncServer: syncServer
     });
 
     server.bind(SERVER_ADDRESS, grpc.ServerCredentials.createInsecure());
@@ -224,19 +246,13 @@ function getServerUrlByKey(call, callback) {
             .find(table => compareIndex(bigInt(key), bigInt(table.key)))
         console.log("finger", finger)
         if (finger == null) {
-            return callback(null, { url: "localhost:" + serverProperties.port, index: datasource.data.currentIndex, key: key })
+            return callback(null, { url: getCurrentUrl(), index: datasource.data.currentIndex, key: key })
         }
         if (finger.index == key || finger.index in origins) {
             return callback(null, { url: finger.url, index: finger.index, key: key })
         } else {
-            let proto = loadProto()
-            let client = new proto.game.Actions(
-                fingerTable[lastKey].url,
-                grpc.credentials.createInsecure(),
-                {
-                    'grpc.min_reconnect_backoff_ms': 1000,
-                    'grpc.max_reconnect_backoff_ms': 10000,
-                }
+            const client = buildClient(
+                datasource.data.fingerTable[lastKey].url
             )
             origins.push(datasource.data.currentIndex)
             client.getServerUrlByKey({
@@ -249,19 +265,27 @@ function getServerUrlByKey(call, callback) {
     }
 }
 
+function buildClient(url) {
+    let proto = loadProto()
+    let client = new proto.game.Actions(
+        url,
+        grpc.credentials.createInsecure(),
+        {
+            'grpc.min_reconnect_backoff_ms': 1000,
+            'grpc.max_reconnect_backoff_ms': 10000,
+        }
+    )
+    return client
+}
+function getCurrentUrl() {
+    return "localhost:" + serverProperties.port
+}
+
 main()
 
 async function buildFingerTable() {
     if (serverProperties.parentUrl != null) {
-        let proto = loadProto()
-        let client = new proto.game.Actions(
-            serverProperties.parentUrl,
-            grpc.credentials.createInsecure(),
-            {
-                'grpc.min_reconnect_backoff_ms': 1000,
-                'grpc.max_reconnect_backoff_ms': 10000,
-            }
-        )
+        const client = buildClient(serverProperties.parentUrl)
         for (let i = 0; i < serverProperties.maxIndexExponent; i++) {
             if (datasource.data.fingerTable == undefined) {
                 datasource.data.fingerTable = {}
@@ -284,7 +308,7 @@ async function buildFingerTable() {
             })
         }
         console.log(datasource.data.fingerTable)
-        client.joinServer({ index: datasource.data.currentIndex, url: "localhost:" + serverProperties.port }, (err, resp) => {
+        client.joinServer({ index: datasource.data.currentIndex, url: getCurrentUrl() }, (err, resp) => {
             console.log(resp)
         })
     } else {
@@ -292,3 +316,4 @@ async function buildFingerTable() {
     }
 }
 buildFingerTable()
+

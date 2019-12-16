@@ -32,6 +32,7 @@ message SyncServerResponse{
 message ShowFingerTableRequest{}
 message ShowFingerTableResponse{
     repeated FingerTable fingerTable= 1;
+    string currentIndex = 2;
 }
 message FingerTable{
     string index = 1;
