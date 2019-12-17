@@ -1,1 +1,0 @@
-{"action":"send","request":{"username":"joao","room":"ufu","text":"help joao undefined"}};{"action":"send","request":{"username":"joao","room":"ufu","text":"listplayers joao undefined"}};{"action":"send","request":{"username":"joao","room":"ufu","text":"join joao undefined"}};

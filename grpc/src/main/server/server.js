@@ -28,7 +28,8 @@ function loadServerProperties() {
     serverProperties.logSizeCacheSize = 3
     serverProperties.logServerPrefix = serverProperties.port + "_log_server"
     console.log(serverProperties.port.toString(), hashOf(serverProperties.port.toString()))
-    const fileRouteName = hashOf(serverProperties.port.toString()) + ".json"
+    const port = process.argv[3] != null ? process.argv[3] : serverProperties.port.toString()
+    const fileRouteName = hashOf(port) + ".json"
     const routes = JSON.parse(fs.readFileSync(fileRouteName), "utf8")
     serverProperties.routes = routes
     serverProperties.routes.fingerprinting.forEach(element => {
