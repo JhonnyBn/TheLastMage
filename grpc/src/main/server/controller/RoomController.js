@@ -4,6 +4,7 @@ import * as roomService from "../service/RoomService"
 import { verifyConsistentHash } from "../util/hashUtil"
 import { serverProperties } from "../model/datasource"
 import * as kafkaUtil from "../util/kafkaUtil"
+import { getClient } from "../util/grpcClientUtil"
 
 const port = process.argv[3] != null ? process.argv[3] : process.argv[2]
 const kafkaTopicReply = "create-room-response-" + port
@@ -20,12 +21,13 @@ kafkaUtil.createConsumer(kafkaTopicRequest, message => {
         id: message.id
     }))
 })
-export function createRoom(call, callback) {
+export async function createRoom(call, callback) {
     const { name } = call.request
     const serverTarget = verifyConsistentHash(name)
     console.log(serverTarget)
     if (serverTarget.port != null) {
-        serverTarget.client.createRoom({ name: name }, (err, response) => {
+        const grpcClient = await getClient(serverTarget.clients)
+        grpcClient.createRoom({ name: name }, (err, response) => {
             if (err) throw err
             console.log("msg enviada", response)
             callback(null, response)
@@ -48,7 +50,7 @@ export function createRoom(call, callback) {
     }
 
 }
-export function listRooms(call, callback) {
+export async function listRooms(call, callback) {
 
     const { origin } = call.request == null ? [] : call.request
     console.log(origin)
@@ -64,8 +66,9 @@ export function listRooms(call, callback) {
         if (clients.length == 0) {
             resolve(responses)
         }
-        clients.forEach(route => {
-            route.client.listRooms({ origin }, (err, response) => {
+        clients.forEach(async route => {
+            const grpcClient = await getClient(route.clients)
+            grpcClient.listRooms({ origin }, (err, response) => {
                 let responseValue = response
                 if (err) responseValue = { rooms: [] }
                 console.log("msg enviada", responseValue)

@@ -35,17 +35,20 @@ function loadServerProperties() {
     serverProperties.routes.fingerprinting.forEach(element => {
         var proto = loadProto()
 
-        const REMOTE_SERVER = `0.0.0.0:${element.port}`
-        //Create gRPC client
-        const client = new proto.game.Actions(
-            REMOTE_SERVER,
-            grpc.credentials.createInsecure(),
-            {
-                'grpc.min_reconnect_backoff_ms': 1000,
-                'grpc.max_reconnect_backoff_ms': 10000,
-            }
+        const remoteServers = []
+        remoteServers[0] = `0.0.0.0:${element.port}`
+        remoteServers[1] = `0.0.0.0:${(element.port + 100)}`
+        remoteServers[2] = `0.0.0.0:${(element.port + 200)}`
+        element.clients = remoteServers.map(
+            server => new proto.game.Actions(
+                server,
+                grpc.credentials.createInsecure(),
+                {
+                    'grpc.min_reconnect_backoff_ms': 1000,
+                    'grpc.max_reconnect_backoff_ms': 10000,
+                }
+            )
         )
-        element.client = client
 
     });
     if (isNaN(serverProperties.port)) throw ("Please set a port.")
@@ -64,7 +67,8 @@ function main() {
         send: send,
         login: loginController,
         createRoom: createRoom,
-        listRooms: listRooms
+        listRooms: listRooms,
+        ping:ping
     });
 
     server.bind(SERVER_ADDRESS, grpc.ServerCredentials.createInsecure());
@@ -73,6 +77,11 @@ function main() {
 
     logUtil.load()
 }
+
+function ping(call, callback){
+    callback(null, {status:200})
+}
+
 
 loadServerProperties()
 main()

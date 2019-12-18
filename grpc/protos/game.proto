@@ -8,6 +8,13 @@ service Actions { //Service class to be used by the clients
     rpc login(Login) returns(LoginResponse){}
     rpc createRoom(CreateRoomRequest) returns(CreateRoomResponse){}
     rpc listRooms(ListRoomsRequest) returns(ListRoomsResponse){}
+    rpc ping(PingRequest) returns(PingResponse){}
+}
+
+message PingRequest{
+}
+message PingResponse{
+    string status = 1;
 }
 
 message ListRoomsRequest{

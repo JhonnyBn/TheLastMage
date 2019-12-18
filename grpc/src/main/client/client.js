@@ -1,6 +1,7 @@
 import * as protoLoader from '@grpc/proto-loader'
 import * as grpc from 'grpc'
 import * as readlineLib from 'readline'
+import { parse } from 'path'
 
 let username = undefined
 let roomName = undefined
@@ -25,18 +26,27 @@ var proto = grpc.loadPackageDefinition(
 
 const REMOTE_SERVER = "0.0.0.0:9092"
 
+const serverInicialPort = parseInt(8080)
+const remoteServers = []
+remoteServers[0] = `0.0.0.0:${serverInicialPort}`
+remoteServers[1] = `0.0.0.0:${(serverInicialPort + 100)}`
+remoteServers[2] = `0.0.0.0:${(serverInicialPort + 200)}`
+
 //Create gRPC client
-let client = new proto.game.Actions(
-    REMOTE_SERVER,
-    grpc.credentials.createInsecure(),
-    {
-        'grpc.min_reconnect_backoff_ms': 1000,
-        'grpc.max_reconnect_backoff_ms': 10000,
-    }
+let clients = remoteServers.map(
+    server => new proto.game.Actions(
+        server,
+        grpc.credentials.createInsecure(),
+        {
+            'grpc.min_reconnect_backoff_ms': 1000,
+            'grpc.max_reconnect_backoff_ms': 10000,
+        }
+    )
 )
 
-function createRoom() {
-    readline.question("Digite o nome da sala:", answer => {
+async function createRoom() {
+    readline.question("Digite o nome da sala:", async answer => {
+        const client = await getClient(clients)
         client.createRoom({ name: answer }, (err, response) => {
             if (err) throw err
             console.log(response)
@@ -46,8 +56,9 @@ function createRoom() {
 
 }
 
-function listRooms() {
-    client.listRooms({}, (err, response) => {
+async function listRooms() {
+    const client = await getClient(clients)
+    client.listRooms({}, async(err, response) => {
         if (err) { console.log(err); throw err }
         console.log("0: voltar.")
         response.rooms.forEach((room, index) => {
@@ -88,19 +99,20 @@ function showMainMenu() {
     })
 }
 
-function joinRoom(name) {
-
+async function joinRoom(name) {
+    const client = await getClient(clients)
     roomName = name
     let channel = client.join({ username: username, room: name })
     channel.on("data", onData)
     channel.on('end', () => { console.log('end'); });
     channel.on('error', () => { });
 
-    readline.on("line", function (text) {
+    readline.on("line", async function (text) {
         let command = text.split(" ")
         if (command[0] == "reconnect") {
             channel.cancel()
-            channel = client.join({ username: username, room: name })
+            const newClient = await getClient(clients)
+            channel = newClient.join({ username: username, room: name })
             channel.on("data", onData)
             channel.on('end', () => { console.log('end'); });
             channel.on('error', () => { })
@@ -115,12 +127,25 @@ function onData(message) {
     console.log(`${message.text}`)
 }
 
-function login() {
+export async function getClient(clients) {
+    console.log("Clients", clients)
+    return new Promise(async(resolve, reject) => {
+        clients.forEach(client => {
+            client.ping({}, (err, msg) => {
+                if (!err) resolve(client)
+            })
+        });
+    }
+    )
+}
+
+async function login() {
 
     //Ask user name then start the chat
-    readline.question("What's ur name? ", answer => {
+    readline.question("What's ur name? ", async answer => {
         username = answer;
-        readline.question("What's ur password? ", password => {
+        readline.question("What's ur password? ", async password => {
+            const client = await getClient(clients)
             client.login({ username: username, password: password }, (err, response) => {
                 if (err) { throw err }
                 if (response.success == 'true') {
@@ -140,5 +165,3 @@ function login() {
 }
 
 login()
-
-// listRooms()
