@@ -3,7 +3,22 @@ import { Log } from "../model/log"
 import * as roomService from "../service/RoomService"
 import { verifyConsistentHash } from "../util/hashUtil"
 import { serverProperties } from "../model/datasource"
+import * as kafkaUtil from "../util/kafkaUtil"
 
+const kafkaTopicReply = "create-room-response"
+const kafkaTopicRequest = "create-room-request"
+
+kafkaUtil.createConsumer(kafkaTopicRequest, message => {
+    save(new Log(action.createRoom, message.request))
+    const response = roomService.createRoom(message.request.name)
+    kafkaUtil.createProducer(kafkaTopicReply, JSON.stringify({
+        response: {
+            id: response.id,
+            name: response.name
+        },
+        id: message.id
+    }))
+})
 export function createRoom(call, callback) {
     const { name } = call.request
     const serverTarget = verifyConsistentHash(name)
@@ -15,12 +30,30 @@ export function createRoom(call, callback) {
             callback(null, response)
         })
     } else {
-        save(new Log(action.createRoom, call.request))
-        const response = roomService.createRoom(name)
-        callback(null, {
-            id: response.id,
-            name: response.name
+        const id = Math.random() * Math.pow(10, 9)
+        let result = null
+        kafkaUtil.createConsumer(kafkaTopicReply, message => {
+            if (message.id == id) {
+                callback(null, {
+                    id: message.response.id,
+                    name: message.response.name
+                })
+                result=1
+            }
         })
+        kafkaUtil.createProducer(kafkaTopicRequest, JSON.stringify({
+            request: call.request,
+            id: id
+        }))
+
+        // function a(){
+        //     console.log("result:",result)
+        //     setTimeout(a,1000)
+        // }
+
+        // a()
+
+
     }
 
 }
