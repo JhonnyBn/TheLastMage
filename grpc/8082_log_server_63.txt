@@ -1,1 +1,0 @@
-{"action":"create_room","request":{"name":"Eae tudo certo"}};{"action":"login","request":{"username":"vinicius","password":"2"}};{"action":"create_room","request":{"name":"teste"}};

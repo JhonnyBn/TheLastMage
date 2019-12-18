@@ -1,0 +1,1 @@
+{"action":"send","request":{"username":"clemente","room":"teste","text":"listplayers clemente undefined"}};{"action":"login","request":{"username":"vinicius","password":"c"}};{"action":"send","request":{"username":"clemente","room":"teste","text":"join clemente undefined"}};

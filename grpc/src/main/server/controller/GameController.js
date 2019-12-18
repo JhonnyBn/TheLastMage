@@ -56,6 +56,7 @@ export async function send(call, callback) {
     const serverTarget = verifyConsistentHash(room)
     console.log(serverTarget)
     if (serverTarget.port != null) {
+        console.log("comando send recebido",call.request )
         const grpcClient = await getClient(serverTarget.clients)
         grpcClient.send({ username: username, room: room, text: text }, () => { })
     } else {
