@@ -1,1 +1,0 @@
-{"action":"create_room","request":{"name":"Hello"}};{"action":"create_room","request":{"name":"Hello"}};{"action":"create_room","request":{"name":"Hello"}};

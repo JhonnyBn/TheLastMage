@@ -1,4 +1,7 @@
 import * as kafka from 'kafka-node'
+import * as fs from 'fs'
+import * as path from 'path'
+import { serverProperties } from '../model/datasource'
 
 const Consumer = kafka.Consumer
 const HighLevelProducer = kafka.HighLevelProducer
@@ -6,7 +9,42 @@ const client = new kafka.KafkaClient({ kafkaHost: 'localhost:9092' })
 const producer = new HighLevelProducer(client);
 const admin = new kafka.Admin(client);
 
+const port = parseInt(process.argv[2])
+const offSetFileName = `offSets_${port}.json`
+let offSets = null
+function init() {
+    if (!fs.existsSync(offSetFileName)) {
+        fs.writeFile(
+            offSetFileName,
+            "{}",
+            (err) => { if (err) throw err; else loadOffSets() }
+        )
+    } else loadOffSets()
+}
+
+function loadOffSets() {
+    try {
+        const offSetFile = fs.readFileSync(offSetFileName, "utf8")
+        console.log(offSetFile)
+        const offSetsData = JSON.parse(offSetFile)
+        offSets = offSetsData
+    } catch (e) { }
+}
+
+function saveOffSets(topic, offset) {
+    if (offSets > offSets[topic]) {
+        offSets[topic] = offset
+        fs.writeFile(
+            offSetFileName,
+            JSON.stringify(offSets),
+            (err) => { if (err) throw err; else console.log('OffSets Saved!') }
+        )
+    }
+}
+init()
+
 async function verifyIfTopicExist(topic) {
+    if (offSets == null) init()
     return new Promise((resolve, reject) => {
         admin.listTopics((err, res) => {
 
@@ -45,9 +83,11 @@ export async function createConsumer(topic, callback) {
     );
     consumer.on('message', function (message) {
         console.log("Consumer message:", message)
-        callback(JSON.parse(message.value))
-        consumer.commit(function (err, data) { console.log(err, data) });
-
+        if (offSets[topic] < message.offset || offSets[topic] == null) {
+            saveOffSets(message.topic, message.offset)
+            callback(JSON.parse(message.value))
+            // consumer.commit(function (err, data) { console.log(err, data) });
+        }
     });
 
 }

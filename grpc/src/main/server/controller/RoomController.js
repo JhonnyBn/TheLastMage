@@ -5,8 +5,9 @@ import { verifyConsistentHash } from "../util/hashUtil"
 import { serverProperties } from "../model/datasource"
 import * as kafkaUtil from "../util/kafkaUtil"
 
-const kafkaTopicReply = "create-room-response"
-const kafkaTopicRequest = "create-room-request"
+const port = process.argv[3] != null ? process.argv[3] : process.argv[2]
+const kafkaTopicReply = "create-room-response-" + port
+const kafkaTopicRequest = "create-room-request-" + port
 
 kafkaUtil.createConsumer(kafkaTopicRequest, message => {
     save(new Log(action.createRoom, message.request))
@@ -31,28 +32,18 @@ export function createRoom(call, callback) {
         })
     } else {
         const id = Math.random() * Math.pow(10, 9)
-        let result = null
         kafkaUtil.createConsumer(kafkaTopicReply, message => {
             if (message.id == id) {
                 callback(null, {
                     id: message.response.id,
                     name: message.response.name
                 })
-                result=1
             }
         })
         kafkaUtil.createProducer(kafkaTopicRequest, JSON.stringify({
             request: call.request,
             id: id
         }))
-
-        // function a(){
-        //     console.log("result:",result)
-        //     setTimeout(a,1000)
-        // }
-
-        // a()
-
 
     }
 

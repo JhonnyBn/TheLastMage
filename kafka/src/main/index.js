@@ -1,6 +1,6 @@
 var kafka = require('kafka-node')
 
-const KAFKA_TOPIC = 'teste12'
+const KAFKA_TOPIC = 'teste13'
 
 async function main() {
 
@@ -16,7 +16,7 @@ async function main() {
             if (KAFKA_TOPIC in topics == false) {
                 client.createTopics([{
                     topic: KAFKA_TOPIC,
-                    partitions: 20,
+                    partitions: 2,
                     replicationFactor: 1
                 }], (error, result) => {
                     console.log(error, result)

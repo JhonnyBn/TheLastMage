@@ -1,1 +1,1 @@
-{"action":"create_room","request":{"name":"Hello"}};{"action":"create_room","request":{"name":"Hello"}};{"action":"create_room","request":{"name":"Hello"}};
+{"action":"login","request":{"username":"vinicius","password":"10"}};{"action":"login","request":{"username":"vinicius","password":"10"}};{"action":"login","request":{"username":"vinicius","password":"10"}};
