@@ -1,1 +1,1 @@
-{"action":"send","request":{"username":"clemente","room":"teste","text":"listplayers clemente undefined"}};{"action":"send","request":{"username":"vinicius","room":"teste","text":"start vinicius undefined"}};{"action":"login","request":{"username":"vinicius","password":"2"}};
+{"action":"login","request":{"username":"gabriel","password":"1"}};{"action":"login","request":{"username":"isabela","password":"1"}};{"action":"login","request":{"username":"ivana","password":"1"}};

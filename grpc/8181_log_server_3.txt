@@ -1,0 +1,1 @@
+{"action":"create_room","request":{"name":"gta5"}};{"action":"send","request":{"username":"vinicius","room":"gta5","text":"join vinicius undefined"}};

@@ -1,1 +1,1 @@
-{"action":"login","request":{"username":"vinicius","password":"2"}};{"action":"send","request":{"username":"vinicius","room":"teste","text":"help vinicius undefined"}};{"action":"create_room","request":{"name":"teste"}};
+{"action":"login","request":{"username":"gabriel","password":"1"}};{"action":"login","request":{"username":"isabela","password":"1"}};{"action":"login","request":{"username":"ivana","password":"1"}};

@@ -32,7 +32,7 @@ function loadOffSets() {
 }
 
 function saveOffSets(topic, offset) {
-    if (offSets > offSets[topic]) {
+    if (offSets > offSets[topic] || offSets[topic] == null) {
         offSets[topic] = offset
         fs.writeFile(
             offSetFileName,

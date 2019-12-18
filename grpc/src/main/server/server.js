@@ -45,7 +45,7 @@ function loadServerProperties() {
                 grpc.credentials.createInsecure(),
                 {
                     'grpc.min_reconnect_backoff_ms': 1000,
-                    'grpc.max_reconnect_backoff_ms': 10000,
+                    'grpc.max_reconnect_backoff_ms': 100000,
                 }
             )
         )
