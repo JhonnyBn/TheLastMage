@@ -12,7 +12,7 @@
     "google-protobuf": "^3.0.0",
     "grpc": "^1.11.0",
     "lodash": "^4.6.1",
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.2",
